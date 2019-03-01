@@ -42,29 +42,35 @@ public class Controller {
 
     @FXML
     void btnAdd(ActionEvent event) {
+        Button btn = (Button) event.getSource();
+        int id = Integer.parseInt(String.valueOf(btn.getUserData()));
         TextInputDialog dialog = new TextInputDialog("1");
         dialog.setGraphic(null);
-        dialog.setHeaderText("Time to add");
+        dialog.setHeaderText(id == 1 ? "Time to add" : "Time to remove");
         Optional<String> result = dialog.showAndWait();
         if (result.isEmpty())
             return;
         try {
             var time = LocalTime.parse(result.get(), DateTimeFormatter.ofPattern("H[:m]"));
-            if (event.getSource() instanceof Button && ((Button) event.getSource()).getId().equalsIgnoreCase("btnAdd"))
-                HoursData.getInstance().addHours(time);
-            else if (event.getSource() instanceof Button && ((Button) event.getSource()).getId().equalsIgnoreCase("btnRemove")) {
-                try {
-                    if (HoursData.getInstance().getHours().isBefore(time)) {
-                        Alert q = new Alert(Alert.AlertType.CONFIRMATION);
-                        q.setContentText("Too much time to remove. Reset time?");
-                        Optional<ButtonType> r = q.showAndWait();
-                        if (r.isPresent() && r.get() == ButtonType.OK)
-                            HoursData.getInstance().clearHours();
-                    } else
-                        HoursData.getInstance().removeHours(time);
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+            switch (id) {
+                case 1:
+                    HoursData.getInstance().addHours(time);
+                    break;
+                case 2: {
+                    try {
+                        if (HoursData.getInstance().getHours().isBefore(time)) {
+                            Alert q = new Alert(Alert.AlertType.CONFIRMATION);
+                            q.setContentText("Too much time to remove. Reset time?");
+                            Optional<ButtonType> r = q.showAndWait();
+                            if (r.isPresent() && r.get() == ButtonType.OK)
+                                HoursData.getInstance().clearHours();
+                        } else
+                            HoursData.getInstance().removeHours(time);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
                 }
+                break;
             }
             lblStatus.setText(HoursData.getInstance().getHoursString());
         } catch (NumberFormatException e) {
