@@ -1,4 +1,4 @@
-package pkl;
+package org.linkuei;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
