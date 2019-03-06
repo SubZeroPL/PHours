@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -45,7 +46,8 @@ public class Main extends Application {
         ((Controller) loader.getController()).init();
         stage.setTitle("Job");
         stage.setOnCloseRequest(Main::onClose);
-        //stage.getIcons().add(null);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon_16.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon_48.png")));
         stage.setResizable(false);
         stage.setScene(new Scene(root));
         stage.show();
