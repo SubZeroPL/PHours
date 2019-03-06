@@ -1,4 +1,4 @@
-package pkl;
+package org.linkuei;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
