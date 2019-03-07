@@ -12,8 +12,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class Controller {
-    ScheduledThreadPoolExecutor timer;
-    boolean enabled = false;
+    private ScheduledThreadPoolExecutor timer;
+    private boolean enabled = false;
     @FXML
     Button btnStart;
     @FXML
@@ -118,13 +118,13 @@ public class Controller {
     private enum Labels {
         START("Start"), STOP("Stop");
 
-        private String text;
+        private final String text;
 
         Labels(String text) {
             this.text = text;
         }
 
-        public String getText() {
+        String getText() {
             return this.text;
         }
     }

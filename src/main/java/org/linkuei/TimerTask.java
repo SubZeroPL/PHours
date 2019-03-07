@@ -2,8 +2,8 @@ package org.linkuei;
 
 import javafx.application.Platform;
 
-public class TimerTask implements Runnable {
-    private Controller controller;
+class TimerTask implements Runnable {
+    private final Controller controller;
 
     TimerTask(Controller controller) {
         this.controller = controller;

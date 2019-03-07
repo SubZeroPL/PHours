@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class HoursData implements Serializable {
+class HoursData implements Serializable {
     private static HoursData INSTANCE = null;
 
     private LocalTime maxTime = LocalTime.of(8, 0);
@@ -20,48 +20,42 @@ public class HoursData implements Serializable {
         this.hours = LocalTime.ofSecondOfDay(0);
     }
 
-    public static HoursData getInstance() {
+    static HoursData getInstance() {
         if (INSTANCE == null)
             INSTANCE = new HoursData();
         return INSTANCE;
     }
 
-    public LocalTime getCurrentTime() {
+    LocalTime getCurrentTime() {
         return currentTime;
     }
 
-    public HoursData setMaxTime(LocalTime maxTime) {
+    void setMaxTime(LocalTime maxTime) {
         this.maxTime = maxTime;
         this.currentTime = maxTime;
-        return this;
     }
 
-    public String getCurrentTimeString() {
+    String getCurrentTimeString() {
         return currentTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    public LocalTime getHours() {
+    LocalTime getHours() {
         return hours;
     }
 
-    public HoursData setHours(LocalTime hours) {
-        this.hours = hours;
-        return this;
-    }
-
-    public String getHoursString() {
+    String getHoursString() {
         return this.hours.format(DateTimeFormatter.ofPattern("H'h' m'm'"));
     }
 
-    public double getProgress() {
+    double getProgress() {
         return (double) currentTime.toSecondOfDay() / maxTime.toSecondOfDay();
     }
 
-    public boolean isOvertime() {
+    boolean isOvertime() {
         return this.overtime;
     }
 
-    public void save() {
+    void save() {
         try (FileOutputStream fileOutputStream = new FileOutputStream("hours.dat"); ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             if (this.overtime)
                 resetCurrentTime();
@@ -71,7 +65,7 @@ public class HoursData implements Serializable {
         }
     }
 
-    public void load() {
+    void load() {
         try (FileInputStream fileInputStream = new FileInputStream("hours.dat"); ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             INSTANCE = (HoursData) objectInputStream.readObject();
         } catch (InvalidClassException e) {
@@ -85,32 +79,32 @@ public class HoursData implements Serializable {
         }
     }
 
-    public void addHours(LocalTime hours) {
+    void addHours(LocalTime hours) {
         this.hours = this.hours.plusSeconds(hours.toSecondOfDay());
     }
 
-    public void removeHours(LocalTime hours) throws IllegalArgumentException {
+    void removeHours(LocalTime hours) throws IllegalArgumentException {
         if (hours.isAfter(this.hours))
             throw new IllegalArgumentException("Too much time to remove");
         this.hours = this.hours.minusSeconds(hours.toSecondOfDay());
     }
 
-    public void clearHours() {
+    void clearHours() {
         this.hours = LocalTime.ofSecondOfDay(0);
     }
 
-    public void resetCurrentTime() {
+    void resetCurrentTime() {
         this.currentTime = this.maxTime;
         this.overtime = false;
     }
 
-    public void minusTime() {
+    void minusTime() {
         if (this.currentTime.toSecondOfDay() == 0)
             this.overtime = true;
         this.currentTime = this.overtime ? this.currentTime.plusSeconds(1) : this.currentTime.minusSeconds(1);
     }
 
-    public void appendOvertime() {
+    void appendOvertime() {
         this.hours = this.hours.plusSeconds(currentTime.truncatedTo(ChronoUnit.MINUTES).toSecondOfDay());
     }
 }

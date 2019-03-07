@@ -11,26 +11,21 @@ import javafx.util.Callback;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class TimeEntryDialog extends Dialog<LocalTime> implements Callback<ButtonType, LocalTime> {
-    private Label label;
-    private TextField textField;
-
-    public TimeEntryDialog() {
-        this("");
-    }
+class TimeEntryDialog extends Dialog<LocalTime> implements Callback<ButtonType, LocalTime> {
+    private final TextField textField;
 
     public TimeEntryDialog(String text) {
         super();
         this.textField = new TextField();
-        this.label = new Label(text);
-        this.label.getStyleClass().add("content");
-        this.label.setWrapText(true);
-        this.label.setPrefWidth(-1.0D);
+        Label label = new Label(text);
+        label.getStyleClass().add("content");
+        label.setWrapText(true);
+        label.setPrefWidth(-1.0D);
         GridPane grid = new GridPane();
         grid.setHgap(10.0D);
         grid.setAlignment(Pos.CENTER_LEFT);
         grid.getChildren().clear();
-        grid.add(this.label, 0, 0);
+        grid.add(label, 0, 0);
         grid.add(this.textField, 1, 0);
         this.getDialogPane().setContent(grid);
         this.getDialogPane().getButtonTypes().add(ButtonType.OK);
