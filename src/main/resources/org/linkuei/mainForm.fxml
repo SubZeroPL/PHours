@@ -4,8 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <TabPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-         minWidth="-Infinity"
-         prefHeight="141.0" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
+         minWidth="-Infinity" prefHeight="141.0" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
          xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="org.linkuei.Controller">
     <Tab closable="false" text="Work Time">
         <GridPane prefHeight="140.0" prefWidth="320.0">
@@ -18,8 +17,7 @@
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER"/>
             </rowConstraints>
-            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="1.0"
-                         GridPane.rowIndex="1"/>
+            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="1.0" GridPane.rowIndex="1"/>
             <Label fx:id="lblTime" text="00:00:00" textAlignment="CENTER" textOverrun="CLIP"
                    GridPane.halignment="CENTER">
                 <font>
@@ -29,12 +27,12 @@
                     <ContextMenu>
                         <items>
                             <Menu mnemonicParsing="false" text="Set time">
-                                <MenuItem fx:id="mi8h" mnemonicParsing="false" onAction="#miSetTime"
-                                          text="8h" userData="8"/>
-                                <MenuItem fx:id="mi7h" mnemonicParsing="false" onAction="#miSetTime"
-                                          text="7h" userData="7"/>
-                                <MenuItem fx:id="miCustom" mnemonicParsing="false" onAction="#miSetTime"
-                                          text="Custom" userData="0"/>
+                                <MenuItem fx:id="mi8h" mnemonicParsing="false" onAction="#miSetTime" text="8h"
+                                          userData="8"/>
+                                <MenuItem fx:id="mi7h" mnemonicParsing="false" onAction="#miSetTime" text="7h"
+                                          userData="7"/>
+                                <MenuItem fx:id="miCustom" mnemonicParsing="false" onAction="#miSetTime" text="Custom"
+                                          userData="0"/>
                             </Menu>
                             <MenuItem mnemonicParsing="false" onAction="#miReset" text="Reset"/>
                         </items>
@@ -66,10 +64,29 @@
                     <Font size="24.0"/>
                 </font>
             </Label>
-            <Button fx:id="btnAdd" onAction="#btnAdd" text="_Add" GridPane.columnIndex="1"
-                    GridPane.halignment="CENTER" userData="1"/>
-            <Button fx:id="btnRemove" onAction="#btnAdd" text="_Remove" GridPane.columnIndex="1"
-                    GridPane.halignment="CENTER" GridPane.rowIndex="1" userData="2"/>
+            <Button fx:id="btnAdd" onAction="#btnAdd" text="_Add" userData="1" GridPane.columnIndex="1"
+                    GridPane.halignment="CENTER"/>
+            <Button fx:id="btnRemove" onAction="#btnAdd" text="_Remove" userData="2" GridPane.columnIndex="1"
+                    GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
         </GridPane>
+    </Tab>
+    <Tab text="Configuration">
+        <content>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <children>
+                    <Label text="Time up message:"/>
+                    <TextField fx:id="timeUpMessage" text="IT go home" GridPane.columnIndex="1"/>
+                </children>
+            </GridPane>
+        </content>
     </Tab>
 </TabPane>
