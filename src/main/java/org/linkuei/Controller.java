@@ -22,6 +22,8 @@ public class Controller {
     Label lblTime;
     @FXML
     Label lblStatus;
+    @FXML
+    TextField timeUpMessage;
 
     @FXML
     void btnStart() {
@@ -90,6 +92,9 @@ public class Controller {
 
     void update() {
         lblTime.setText(HoursData.getInstance().getCurrentTimeString());
+        if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0) {
+            Notification.getInstance(null).show(timeUpMessage.getText());
+        }
         if (HoursData.getInstance().isOvertime())
             lblTime.setStyle("-fx-text-fill: red");
         else

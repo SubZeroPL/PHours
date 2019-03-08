@@ -35,6 +35,10 @@ class HoursData implements Serializable {
         this.currentTime = maxTime;
     }
 
+    String getMaxTimeString() {
+        return this.maxTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+    }
+
     String getCurrentTimeString() {
         return currentTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
@@ -99,8 +103,10 @@ class HoursData implements Serializable {
     }
 
     void minusTime() {
-        if (this.currentTime.toSecondOfDay() == 0)
+        if (this.currentTime.toSecondOfDay() == 0) {
             this.overtime = true;
+            this.maxTime = LocalTime.ofSecondOfDay(0);
+        }
         this.currentTime = this.overtime ? this.currentTime.plusSeconds(1) : this.currentTime.minusSeconds(1);
     }
 

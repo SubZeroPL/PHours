@@ -105,6 +105,7 @@ public class Main extends Application implements MouseListener {
 
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
+            Notification.getInstance(this.trayIcon);
         } catch (AWTException | IOException e) {
             System.out.println("Unable to init system tray");
             e.printStackTrace();
@@ -126,12 +127,16 @@ public class Main extends Application implements MouseListener {
         if (e.getButton() == MouseEvent.BUTTON1) {
             Platform.runLater(this::showStage);
             e.consume();
+        } else {
+            long percent = Math.round(HoursData.getInstance().getProgress() * 100);
+            String message = String.format("%s of %s [%d%%]", HoursData.getInstance().getCurrentTimeString(), HoursData.getInstance().getMaxTimeString(), percent);
+            Notification.getInstance(this.trayIcon).show("PHours", message);
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // not implemented
+        System.out.println("mousePressed");
     }
 
     @Override
