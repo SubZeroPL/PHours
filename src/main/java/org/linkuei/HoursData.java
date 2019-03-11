@@ -35,7 +35,7 @@ class HoursData implements Serializable {
         this.currentTime = maxTime;
     }
 
-    String getMaxTimeString() {
+    private String getMaxTimeString() {
         return this.maxTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
@@ -128,7 +128,6 @@ class HoursData implements Serializable {
 
     String getNotification() {
         long percent = Math.round(getProgress() * 100);
-        String message = String.format("%s of %s [%d%%]", getCurrentTimeString(), getMaxTimeString(), percent);
-        return message;
+        return String.format("%s of %s [%d%%]", getCurrentTimeString(), getMaxTimeString(), percent);
     }
 }
