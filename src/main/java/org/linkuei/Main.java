@@ -128,9 +128,8 @@ public class Main extends Application implements MouseListener {
             Platform.runLater(this::showStage);
             e.consume();
         } else {
-            long percent = Math.round(HoursData.getInstance().getProgress() * 100);
-            String message = String.format("%s of %s [%d%%]", HoursData.getInstance().getCurrentTimeString(), HoursData.getInstance().getMaxTimeString(), percent);
-            Notification.getInstance(this.trayIcon).show("PHours", message);
+            String message = HoursData.getInstance().getNotification();
+            Notification.getInstance(this.trayIcon).show(message);
         }
     }
 

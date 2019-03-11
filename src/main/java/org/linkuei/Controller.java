@@ -12,8 +12,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class Controller {
-    private ScheduledThreadPoolExecutor timer;
-    private boolean enabled = false;
     @FXML
     Button btnStart;
     @FXML
@@ -24,12 +22,17 @@ public class Controller {
     Label lblStatus;
     @FXML
     TextField timeUpMessage;
+    @FXML
+    Spinner<Integer> spinMinutes;
+    private ScheduledThreadPoolExecutor timer, notificationTimer;
+    private boolean enabled = false;
 
     @FXML
     void btnStart() {
         if (enabled) {
             enabled = false;
             timer.shutdown();
+            notificationTimer.shutdown();
             btnStart.setText(Labels.START.getText());
         } else {
             if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0)
@@ -38,6 +41,10 @@ public class Controller {
             TimerTask task = new TimerTask(this);
             timer = new ScheduledThreadPoolExecutor(1);
             timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
+            NotificationTask notificationTask = new NotificationTask();
+            long minutes = HoursData.getInstance().getNotificationMinutes();
+            notificationTimer = new ScheduledThreadPoolExecutor(1);
+            notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
             btnStart.setText(Labels.STOP.getText());
         }
     }
@@ -86,14 +93,26 @@ public class Controller {
     }
 
     void init() {
-        lblStatus.setText(HoursData.getInstance().getHoursString());
-        lblTime.setText(HoursData.getInstance().getCurrentTimeString());
+        this.lblStatus.setText(HoursData.getInstance().getHoursString());
+        this.lblTime.setText(HoursData.getInstance().getCurrentTimeString());
+        this.timeUpMessage.setText(HoursData.getInstance().getTimeUpMessage());
+        this.spinMinutes.getEditor().setText(String.valueOf(HoursData.getInstance().getNotificationMinutes()));
+        this.timeUpMessage.textProperty().addListener((observable, oldValue, newValue) -> this.timeUpMessageChanged(newValue));
+        this.spinMinutes.valueProperty().addListener((observable, oldValue, newValue) -> this.spinMinutesChanged(newValue));
+    }
+
+    private void timeUpMessageChanged(String newValue) {
+        HoursData.getInstance().setTimeUpMessage(newValue);
+    }
+
+    private void spinMinutesChanged(Integer value) {
+        HoursData.getInstance().setNotificationMinutes(value);
     }
 
     void update() {
         lblTime.setText(HoursData.getInstance().getCurrentTimeString());
         if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0) {
-            Notification.getInstance(null).show(timeUpMessage.getText());
+            Notification.getInstance(null).show(HoursData.getInstance().getTimeUpMessage());
         }
         if (HoursData.getInstance().isOvertime())
             lblTime.setStyle("-fx-text-fill: red");

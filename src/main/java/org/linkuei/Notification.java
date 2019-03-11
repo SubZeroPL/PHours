@@ -16,11 +16,16 @@ public class Notification {
         return ourInstance;
     }
 
+    public static Notification getInstance() {
+        return getInstance(null);
+    }
+
     public void show(String text) {
         this.show("PHours", text);
     }
 
     public void show(String caption, String text) {
-        this.icon.displayMessage(caption, text, TrayIcon.MessageType.INFO);
+        if (this.icon != null)
+            this.icon.displayMessage(caption, text, TrayIcon.MessageType.INFO);
     }
 }

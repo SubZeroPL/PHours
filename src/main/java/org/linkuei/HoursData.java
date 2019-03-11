@@ -1,8 +1,6 @@
 package org.linkuei;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -14,6 +12,8 @@ class HoursData implements Serializable {
     private LocalTime currentTime;
     private LocalTime hours;
     private boolean overtime = false;
+    private String timeUpMessage;
+    private int notificationMinutes;
 
     private HoursData() {
         this.currentTime = LocalTime.ofSecondOfDay(0);
@@ -52,11 +52,30 @@ class HoursData implements Serializable {
     }
 
     double getProgress() {
-        return (double) currentTime.toSecondOfDay() / maxTime.toSecondOfDay();
+        if (this.overtime)
+            return 1.0;
+        else
+            return (double) currentTime.toSecondOfDay() / maxTime.toSecondOfDay();
     }
 
     boolean isOvertime() {
         return this.overtime;
+    }
+
+    String getTimeUpMessage() {
+        return this.timeUpMessage;
+    }
+
+    void setTimeUpMessage(String message) {
+        this.timeUpMessage = message;
+    }
+
+    int getNotificationMinutes() {
+        return this.notificationMinutes;
+    }
+
+    void setNotificationMinutes(int notificationMinutes) {
+        this.notificationMinutes = notificationMinutes;
     }
 
     void save() {
@@ -72,12 +91,6 @@ class HoursData implements Serializable {
     void load() {
         try (FileInputStream fileInputStream = new FileInputStream("hours.dat"); ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             INSTANCE = (HoursData) objectInputStream.readObject();
-        } catch (InvalidClassException e) {
-            try {
-                Files.deleteIfExists(Path.of("hours.dat"));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -105,12 +118,17 @@ class HoursData implements Serializable {
     void minusTime() {
         if (this.currentTime.toSecondOfDay() == 0) {
             this.overtime = true;
-            this.maxTime = LocalTime.ofSecondOfDay(0);
         }
         this.currentTime = this.overtime ? this.currentTime.plusSeconds(1) : this.currentTime.minusSeconds(1);
     }
 
     void appendOvertime() {
         this.hours = this.hours.plusSeconds(currentTime.truncatedTo(ChronoUnit.MINUTES).toSecondOfDay());
+    }
+
+    String getNotification() {
+        long percent = Math.round(getProgress() * 100);
+        String message = String.format("%s of %s [%d%%]", getCurrentTimeString(), getMaxTimeString(), percent);
+        return message;
     }
 }

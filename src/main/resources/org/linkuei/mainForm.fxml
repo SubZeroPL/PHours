@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <TabPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-         minWidth="-Infinity" prefHeight="141.0" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
+         minWidth="-Infinity"
+         prefHeight="141.0" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
          xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="org.linkuei.Controller">
     <Tab closable="false" text="Work Time">
         <GridPane prefHeight="140.0" prefWidth="320.0">
@@ -70,7 +72,7 @@
                     GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
         </GridPane>
     </Tab>
-    <Tab text="Configuration">
+    <Tab closable="false" text="Configuration">
         <GridPane>
             <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -81,10 +83,32 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
-            <children>
-                <Label text="Time up message:"/>
-                <TextField fx:id="timeUpMessage" text="IT go home" GridPane.columnIndex="1"/>
-            </children>
+            <Label text="Time up message:"/>
+            <TextField fx:id="timeUpMessage" text="IT go home" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </TextField>
+            <Label text="Show notification every:" GridPane.rowIndex="1"/>
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <Spinner fx:id="spinMinutes">
+                    <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="120" amountToStepBy="1"
+                                                                        initialValue="60"/>
+                    </valueFactory>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </Spinner>
+                <Label text="minutes" GridPane.columnIndex="1"/>
+            </GridPane>
         </GridPane>
     </Tab>
 </TabPane>
