@@ -31,18 +31,16 @@ public class Main extends Application implements MouseListener {
     }
 
     private void onClose(WindowEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Really close?");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Really close?", ButtonType.YES, ButtonType.NO);
         Optional<ButtonType> res = alert.showAndWait();
         if (res.isPresent() && res.get().getButtonData().isCancelButton())
             event.consume();
         else {
             Platform.setImplicitExit(true);
             if (HoursData.getInstance().isOvertime()) {
-                alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText("Add overtime to hours?");
+                alert = new Alert(Alert.AlertType.CONFIRMATION, "Add overtime to hours?", ButtonType.YES, ButtonType.NO);
                 res = alert.showAndWait();
-                if (res.isPresent() && res.get() == ButtonType.OK) {
+                if (res.isPresent() && res.get() == ButtonType.YES) {
                     HoursData.getInstance().appendOvertime();
                 }
             }
