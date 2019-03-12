@@ -1,5 +1,7 @@
 package org.linkuei;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.awt.*;
 
 public class Notification {
@@ -25,6 +27,8 @@ public class Notification {
     }
 
     public void show(String caption, String text) {
+        if (StringUtils.isBlank(text))
+            return;
         if (this.icon != null)
             this.icon.displayMessage(caption, text, TrayIcon.MessageType.INFO);
     }

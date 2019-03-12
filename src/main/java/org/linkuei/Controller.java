@@ -32,7 +32,8 @@ public class Controller {
         if (enabled) {
             enabled = false;
             timer.shutdown();
-            notificationTimer.shutdown();
+            if (notificationTimer != null)
+                notificationTimer.shutdown();
             btnStart.setText(Labels.START.getText());
         } else {
             if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0)
@@ -43,17 +44,19 @@ public class Controller {
             timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
             NotificationTask notificationTask = new NotificationTask();
             long minutes = HoursData.getInstance().getNotificationMinutes();
-            notificationTimer = new ScheduledThreadPoolExecutor(1);
-            notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
+            if (minutes > 0) {
+                notificationTimer = new ScheduledThreadPoolExecutor(1);
+                notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
+            }
             btnStart.setText(Labels.STOP.getText());
         }
     }
 
     @FXML
     void btnAdd(ActionEvent event) {
-        Button btn = (Button) event.getSource();
-        int id = Integer.parseInt(String.valueOf(btn.getUserData()));
-        TextInputDialog dialog = new TextInputDialog("1");
+        var btn = (Button) event.getSource();
+        var id = Integer.parseInt(String.valueOf(btn.getUserData()));
+        var dialog = new TextInputDialog("1");
         dialog.setGraphic(null);
         dialog.setHeaderText(id == 1 ? "Time to add" : "Time to remove");
         Optional<String> result = dialog.showAndWait();
