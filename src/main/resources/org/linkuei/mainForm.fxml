@@ -98,10 +98,9 @@
                 <rowConstraints>
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                 </rowConstraints>
-                <Spinner fx:id="spinMinutes">
+                <Spinner fx:id="spinMinutes" editable="true">
                     <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="120" amountToStepBy="1"
-                                                                        initialValue="60"/>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="1" max="120" min="0"/>
                     </valueFactory>
                     <GridPane.margin>
                         <Insets left="5.0" right="5.0"/>
