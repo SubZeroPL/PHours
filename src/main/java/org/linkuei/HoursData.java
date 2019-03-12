@@ -12,6 +12,7 @@ class HoursData implements Serializable {
     private LocalTime currentTime;
     private LocalTime hours;
     private boolean overtime = false;
+    private boolean negativeHours;
     private String timeUpMessage;
     private int notificationMinutes;
 
@@ -48,7 +49,7 @@ class HoursData implements Serializable {
     }
 
     String getHoursString() {
-        return this.hours.format(DateTimeFormatter.ofPattern("H'h' m'm'"));
+        return this.hours.format(DateTimeFormatter.ofPattern((this.negativeHours ? "-" : "") + "H'h' m'm'"));
     }
 
     double getProgress() {
@@ -60,6 +61,10 @@ class HoursData implements Serializable {
 
     boolean isOvertime() {
         return this.overtime;
+    }
+
+    boolean isNegativeHours() {
+        return this.negativeHours;
     }
 
     String getTimeUpMessage() {
@@ -96,14 +101,30 @@ class HoursData implements Serializable {
         }
     }
 
-    void addHours(LocalTime hours) {
-        this.hours = this.hours.plusSeconds(hours.toSecondOfDay());
+    void addHours(LocalTime toAdd) {
+        if (!this.negativeHours) {
+            this.hours = this.hours.plusSeconds(toAdd.toSecondOfDay());
+        } else {
+            if (toAdd.isAfter(this.hours)) {
+                this.hours = toAdd.minusSeconds(this.hours.toSecondOfDay());
+                this.negativeHours = false;
+            } else {
+                this.hours = this.hours.minusSeconds(toAdd.toSecondOfDay());
+            }
+        }
     }
 
-    void removeHours(LocalTime hours) throws IllegalArgumentException {
-        if (hours.isAfter(this.hours))
-            throw new IllegalArgumentException("Too much time to remove");
-        this.hours = this.hours.minusSeconds(hours.toSecondOfDay());
+    void removeHours(LocalTime toRemove) throws IllegalArgumentException {
+        if (this.negativeHours)
+            this.hours = this.hours.plusSeconds(toRemove.toSecondOfDay());
+        else {
+            if (toRemove.isAfter(this.hours)) {
+                this.hours = toRemove.minusSeconds(this.hours.toSecondOfDay());
+                this.negativeHours = true;
+            } else {
+                this.hours = this.hours.minusSeconds(toRemove.toSecondOfDay());
+            }
+        }
     }
 
     void clearHours() {

@@ -68,23 +68,11 @@ public class Controller {
                 case 1:
                     HoursData.getInstance().addHours(time);
                     break;
-                case 2: {
-                    try {
-                        if (HoursData.getInstance().getHours().isBefore(time)) {
-                            Alert q = new Alert(Alert.AlertType.CONFIRMATION);
-                            q.setContentText("Too much time to remove. Reset time?");
-                            Optional<ButtonType> r = q.showAndWait();
-                            if (r.isPresent() && r.get() == ButtonType.OK)
-                                HoursData.getInstance().clearHours();
-                        } else
-                            HoursData.getInstance().removeHours(time);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
+                case 2:
+                    HoursData.getInstance().removeHours(time);
+                    break;
             }
-            lblStatus.setText(HoursData.getInstance().getHoursString());
+            update();
         } catch (NumberFormatException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -114,14 +102,19 @@ public class Controller {
 
     void update() {
         lblTime.setText(HoursData.getInstance().getCurrentTimeString());
-        if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0) {
-            Notification.getInstance(null).show(HoursData.getInstance().getTimeUpMessage());
-        }
         if (HoursData.getInstance().isOvertime())
             lblTime.setStyle("-fx-text-fill: red");
         else
             lblTime.setStyle(null);
+        lblStatus.setText(HoursData.getInstance().getHoursString());
+        if (HoursData.getInstance().isNegativeHours())
+            lblStatus.setStyle("-fx-text-fill: red");
+        else
+            lblStatus.setStyle(null);
         progress.setProgress(HoursData.getInstance().getProgress());
+        if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0 && timer != null) {
+            Notification.getInstance(null).show(HoursData.getInstance().getTimeUpMessage());
+        }
     }
 
     public void miSetTime(ActionEvent event) {
