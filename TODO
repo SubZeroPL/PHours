@@ -1,3 +1,4 @@
 - negative hours (to make up)
 - gradient progress bar
 - version independent serialization
+- fancier end-of-time notification
