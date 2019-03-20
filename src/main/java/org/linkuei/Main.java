@@ -42,6 +42,12 @@ public class Main extends Application implements MouseListener {
                 if (res.isPresent() && res.get() == ButtonType.YES) {
                     HoursData.getInstance().appendOvertime();
                 }
+            } else {
+                alert = new Alert(Alert.AlertType.CONFIRMATION, "Add time to hours?", ButtonType.YES, ButtonType.NO);
+                res = alert.showAndWait();
+                if (res.isPresent() && res.get() == ButtonType.YES) {
+                    HoursData.getInstance().appendUndertime();
+                }
             }
             HoursData.getInstance().save();
             SystemTray tray = SystemTray.getSystemTray();

@@ -144,7 +144,11 @@ class HoursData implements Serializable {
     }
 
     void appendOvertime() {
-        this.hours = this.hours.plusSeconds(currentTime.truncatedTo(ChronoUnit.MINUTES).toSecondOfDay());
+        this.removeHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
+    }
+
+    void appendUndertime() {
+        this.addHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
     String getNotification() {
