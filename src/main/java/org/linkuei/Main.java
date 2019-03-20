@@ -17,7 +17,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.Optional;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 
@@ -31,8 +30,8 @@ public class Main extends Application implements MouseListener {
     }
 
     private void onClose(WindowEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Really close?", ButtonType.YES, ButtonType.NO);
-        Optional<ButtonType> res = alert.showAndWait();
+        var alert = new Alert(Alert.AlertType.CONFIRMATION, "Really close?", ButtonType.YES, ButtonType.NO);
+        var res = alert.showAndWait();
         if (res.isPresent() && res.get().getButtonData().isCancelButton())
             event.consume();
         else {
@@ -116,7 +115,9 @@ public class Main extends Application implements MouseListener {
     private void showStage() {
         if (stage != null && !stage.isShowing()) {
             stage.show();
+            stage.setAlwaysOnTop(true);
             stage.toFront();
+            stage.setAlwaysOnTop(false);
         }
     }
 

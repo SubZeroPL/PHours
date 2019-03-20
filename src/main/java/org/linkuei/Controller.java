@@ -84,8 +84,7 @@ public class Controller {
     }
 
     void init() {
-        this.lblStatus.setText(HoursData.getInstance().getHoursString());
-        this.lblTime.setText(HoursData.getInstance().getCurrentTimeString());
+        this.update();
         this.timeUpMessage.setText(HoursData.getInstance().getTimeUpMessage());
         this.spinMinutes.getEditor().setText(String.valueOf(HoursData.getInstance().getNotificationMinutes()));
         this.timeUpMessage.textProperty().addListener((observable, oldValue, newValue) -> this.timeUpMessageChanged(newValue));
@@ -101,17 +100,17 @@ public class Controller {
     }
 
     void update() {
-        lblTime.setText(HoursData.getInstance().getCurrentTimeString());
+        this.lblTime.setText(HoursData.getInstance().getCurrentTimeString());
         if (HoursData.getInstance().isOvertime())
-            lblTime.setStyle("-fx-text-fill: red");
+            this.lblTime.setStyle("-fx-text-fill: red");
         else
-            lblTime.setStyle(null);
-        lblStatus.setText(HoursData.getInstance().getHoursString());
+            this.lblTime.setStyle(null);
+        this.lblStatus.setText(HoursData.getInstance().getHoursString());
         if (HoursData.getInstance().isNegativeHours())
-            lblStatus.setStyle("-fx-text-fill: red");
+            this.lblStatus.setStyle("-fx-text-fill: red");
         else
-            lblStatus.setStyle(null);
-        progress.setProgress(HoursData.getInstance().getProgress());
+            this.lblStatus.setStyle(null);
+        this.progress.setProgress(HoursData.getInstance().getProgress());
         if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0 && timer != null) {
             Notification.getInstance(null).show(HoursData.getInstance().getTimeUpMessage());
         }
