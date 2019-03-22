@@ -111,9 +111,17 @@ public class Controller {
         else
             this.lblStatus.setStyle(null);
         this.progress.setProgress(HoursData.getInstance().getProgress());
+        this.updateProgressBar();
         if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0 && timer != null) {
             Notification.getInstance(null).show(HoursData.getInstance().getTimeUpMessage());
         }
+    }
+
+    private void updateProgressBar() {
+        long red = Math.round(this.progress.getProgress() * 255);
+        var green = 255 - red;
+        var blue = (this.progress.getProgress() > 0.5) ? green * 2 : red * 2;
+        this.progress.setStyle(String.format("-fx-accent: RGB(%d, %d, %d)", red, green, blue));
     }
 
     public void miSetTime(ActionEvent event) {
