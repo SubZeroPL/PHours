@@ -44,10 +44,6 @@ class HoursData implements Serializable {
         return currentTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    LocalTime getHours() {
-        return hours;
-    }
-
     String getHoursString() {
         return this.hours.format(DateTimeFormatter.ofPattern((this.negativeHours ? "-" : "") + "H'h' m'm'"));
     }
@@ -125,10 +121,6 @@ class HoursData implements Serializable {
                 this.hours = this.hours.minusSeconds(toRemove.toSecondOfDay());
             }
         }
-    }
-
-    void clearHours() {
-        this.hours = LocalTime.ofSecondOfDay(0);
     }
 
     void resetCurrentTime() {

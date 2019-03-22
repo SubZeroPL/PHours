@@ -36,17 +36,19 @@ public class Main extends Application implements MouseListener {
             event.consume();
         else {
             Platform.setImplicitExit(true);
-            if (HoursData.getInstance().isOvertime()) {
-                alert = new Alert(Alert.AlertType.CONFIRMATION, "Add overtime to hours?", ButtonType.YES, ButtonType.NO);
-                res = alert.showAndWait();
-                if (res.isPresent() && res.get() == ButtonType.YES) {
-                    HoursData.getInstance().appendOvertime();
-                }
-            } else {
-                alert = new Alert(Alert.AlertType.CONFIRMATION, "Add time to hours?", ButtonType.YES, ButtonType.NO);
-                res = alert.showAndWait();
-                if (res.isPresent() && res.get() == ButtonType.YES) {
-                    HoursData.getInstance().appendUndertime();
+            if (HoursData.getInstance().getCurrentTime().toSecondOfDay() != 0) {
+                if (HoursData.getInstance().isOvertime()) {
+                    alert = new Alert(Alert.AlertType.CONFIRMATION, "Add overtime to hours?", ButtonType.YES, ButtonType.NO);
+                    res = alert.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.YES) {
+                        HoursData.getInstance().appendOvertime();
+                    }
+                } else {
+                    alert = new Alert(Alert.AlertType.CONFIRMATION, "Add time to hours?", ButtonType.YES, ButtonType.NO);
+                    res = alert.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.YES) {
+                        HoursData.getInstance().appendUndertime();
+                    }
                 }
             }
             HoursData.getInstance().save();
