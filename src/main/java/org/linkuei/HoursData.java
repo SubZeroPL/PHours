@@ -15,10 +15,14 @@ class HoursData implements Serializable {
     private boolean negativeHours;
     private String timeUpMessage;
     private int notificationMinutes;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     private HoursData() {
-        this.currentTime = LocalTime.ofSecondOfDay(0);
-        this.hours = LocalTime.ofSecondOfDay(0);
+        this.currentTime = LocalTime.MIN;
+        this.hours = LocalTime.MIN;
+        this.startTime = LocalTime.MIN;
+        this.endTime = LocalTime.MIN;
     }
 
     static HoursData getInstance() {
@@ -79,6 +83,25 @@ class HoursData implements Serializable {
         this.notificationMinutes = notificationMinutes;
     }
 
+    public void setStartTimeNow() {
+        this.startTime = LocalTime.now();
+    }
+
+    String getStartTimeString() {
+        return this.startTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public void setEndTime() {
+        if (this.startTime == LocalTime.MIN || this.currentTime == LocalTime.MIN)
+            return;
+        this.endTime = LocalTime.MIN;
+        this.endTime = this.startTime.plusSeconds(this.currentTime.toSecondOfDay());
+    }
+
+    String getEndTimeString() {
+        return this.endTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
     void save() {
         try (FileOutputStream fileOutputStream = new FileOutputStream("hours.dat"); ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             if (this.overtime)
@@ -129,7 +152,7 @@ class HoursData implements Serializable {
     }
 
     void minusTime() {
-        if (this.currentTime.toSecondOfDay() == 0) {
+        if (this.currentTime == LocalTime.MIN) {
             this.overtime = true;
         }
         this.currentTime = this.overtime ? this.currentTime.plusSeconds(1) : this.currentTime.minusSeconds(1);
@@ -144,7 +167,7 @@ class HoursData implements Serializable {
     }
 
     String getNotification() {
-        long percent = Math.round(getProgress() * 100);
-        return String.format("%s of %s [%d%%]", getCurrentTimeString(), getMaxTimeString(), percent);
+        long percent = Math.round(this.getProgress() * 100);
+        return String.format("%s%s of %s [%d%%]", this.isOvertime() ? "-" : "", this.getCurrentTimeString(), this.getMaxTimeString(), percent);
     }
 }

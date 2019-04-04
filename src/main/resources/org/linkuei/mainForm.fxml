@@ -5,23 +5,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <TabPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-         minWidth="-Infinity"
-         prefHeight="141.0" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
+         minWidth="-Infinity" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
          xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="org.linkuei.Controller">
     <Tab closable="false" text="Work Time">
-        <GridPane prefHeight="140.0" prefWidth="320.0">
+        <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints hgrow="SOMETIMES"/>
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints vgrow="NEVER"/>
-                <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="1.0" GridPane.rowIndex="1"/>
             <Label fx:id="lblTime" text="00:00:00" textAlignment="CENTER" textOverrun="CLIP"
-                   GridPane.halignment="CENTER">
+                   GridPane.halignment="CENTER" GridPane.rowSpan="4">
                 <font>
                     <Font name="Courier New" size="40.0"/>
                 </font>
@@ -41,8 +42,22 @@
                     </ContextMenu>
                 </contextMenu>
             </Label>
+            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="1.0"
+                         GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+                <GridPane.margin>
+                    <Insets left="2.0" right="2.0" top="5.0"/>
+                </GridPane.margin>
+            </ProgressBar>
             <Button fx:id="btnStart" defaultButton="true" onAction="#btnStart" text="_Start"
-                    GridPane.halignment="CENTER" GridPane.rowIndex="3"/>
+                    GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
+            <Label text="Start time" GridPane.columnIndex="1"/>
+            <Label text="End time" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            <Label fx:id="lblStartTime" text="00:00" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label fx:id="lblEndTime" text="00:00" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
         </GridPane>
     </Tab>
     <Tab closable="false" text="Hours">

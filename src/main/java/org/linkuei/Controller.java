@@ -24,6 +24,11 @@ public class Controller {
     TextField timeUpMessage;
     @FXML
     Spinner<Integer> spinMinutes;
+    @FXML
+    Label lblStartTime;
+    @FXML
+    Label lblEndTime;
+
     private ScheduledThreadPoolExecutor timer, notificationTimer;
     private boolean enabled = false;
 
@@ -36,9 +41,11 @@ public class Controller {
                 notificationTimer.shutdown();
             btnStart.setText(Labels.START.getText());
         } else {
-            if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0)
+            if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN)
                 return;
             enabled = true;
+            HoursData.getInstance().setStartTimeNow();
+            HoursData.getInstance().setEndTime();
             TimerTask task = new TimerTask(this);
             timer = new ScheduledThreadPoolExecutor(1);
             timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
@@ -111,9 +118,11 @@ public class Controller {
         else
             this.lblStatus.setStyle(null);
         this.progress.setProgress(HoursData.getInstance().getProgress());
+        this.lblStartTime.setText(HoursData.getInstance().getStartTimeString());
+        this.lblEndTime.setText(HoursData.getInstance().getEndTimeString());
         this.updateProgressBar();
-        if (HoursData.getInstance().getCurrentTime().toSecondOfDay() == 0 && timer != null) {
-            Notification.getInstance(null).show(HoursData.getInstance().getTimeUpMessage());
+        if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null) {
+            Notification.getInstance().show(HoursData.getInstance().getTimeUpMessage());
         }
     }
 
