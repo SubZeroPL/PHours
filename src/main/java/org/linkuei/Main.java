@@ -54,13 +54,13 @@ public class Main extends Application {
             }
             HoursData.getInstance().save();
             SystemTray tray = SystemTray.getSystemTray();
-            tray.remove(trayIcon);
+            tray.remove(this.trayIcon);
         }
     }
 
     private void onMinimize(Boolean minimized) {
         if (minimized)
-            stage.hide();
+            this.stage.hide();
     }
 
     @Override
@@ -103,14 +103,14 @@ public class Main extends Application {
             // set up a system tray icon.
             SystemTray tray = SystemTray.getSystemTray();
             java.awt.Image image = ImageIO.read(getClass().getResource("icon_16.png"));
-            trayIcon = new TrayIcon(image);
-            trayIcon.setToolTip("PHours");
+            this.trayIcon = new TrayIcon(image);
+            this.trayIcon.setToolTip("PHours");
 
             // if the user double-clicks on the tray icon, show the main app stage.
             this.trayIcon.addMouseListener(new MyMouseAdapter());
 
             // add the application tray icon to the system tray.
-            tray.add(trayIcon);
+            tray.add(this.trayIcon);
             Notification.getInstance(this.trayIcon);
         } catch (AWTException | IOException e) {
             System.out.println("Unable to init system tray");
@@ -122,11 +122,11 @@ public class Main extends Application {
      * Shows the application stage and ensures that it is brought ot the front of all stages.
      */
     private void showStage() {
-        if (stage != null && !stage.isShowing()) {
-            stage.show();
-            stage.setAlwaysOnTop(true);
-            stage.toFront();
-            stage.setAlwaysOnTop(false);
+        if (this.stage != null && !this.stage.isShowing()) {
+            this.stage.setAlwaysOnTop(true);
+            this.stage.show();
+            this.stage.toFront();
+            this.stage.setAlwaysOnTop(false);
         }
     }
 
