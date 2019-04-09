@@ -14,13 +14,14 @@ import javafx.stage.WindowEvent;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 
-public class Main extends Application implements MouseListener {
+public class Main extends Application {
 
     private Stage stage;
     private TrayIcon trayIcon;
@@ -106,7 +107,7 @@ public class Main extends Application implements MouseListener {
             trayIcon.setToolTip("PHours");
 
             // if the user double-clicks on the tray icon, show the main app stage.
-            trayIcon.addMouseListener(this);
+            this.trayIcon.addMouseListener(new MyMouseAdapter());
 
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
@@ -129,34 +130,16 @@ public class Main extends Application implements MouseListener {
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            Platform.runLater(this::showStage);
-            e.consume();
-        } else {
-            String message = HoursData.getInstance().getNotification();
-            Notification.getInstance(this.trayIcon).show(message);
+    private class MyMouseAdapter extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                Platform.runLater(Main.this::showStage);
+                e.consume();
+            } else {
+                String message = HoursData.getInstance().getNotification();
+                Notification.getInstance(Main.this.trayIcon).show(message);
+            }
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        System.out.println("mousePressed");
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // not implemented
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        System.out.println("mouseEntered");
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        System.out.println("mouseExited");
     }
 }
