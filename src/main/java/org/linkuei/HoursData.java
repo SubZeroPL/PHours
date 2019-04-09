@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 class HoursData implements Serializable {
+    static final long serialVersionUID = 1L;
+
     private static HoursData INSTANCE = null;
 
     private LocalTime maxTime = LocalTime.of(8, 0);
