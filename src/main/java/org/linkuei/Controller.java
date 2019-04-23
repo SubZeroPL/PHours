@@ -28,6 +28,8 @@ public class Controller {
     Label lblStartTime;
     @FXML
     Label lblEndTime;
+    @FXML
+    Spinner<Integer> spinWorkHours;
 
     private ScheduledThreadPoolExecutor timer, notificationTimer;
     private boolean enabled = false;
@@ -96,6 +98,7 @@ public class Controller {
         this.spinMinutes.getEditor().setText(String.valueOf(HoursData.getInstance().getNotificationMinutes()));
         this.timeUpMessage.textProperty().addListener((observable, oldValue, newValue) -> this.timeUpMessageChanged(newValue));
         this.spinMinutes.valueProperty().addListener((observable, oldValue, newValue) -> this.spinMinutesChanged(newValue));
+        this.spinWorkHours.valueProperty().addListener(((observable, oldValue, newValue) -> this.spinWorkHoursChanged(newValue)));
     }
 
     private void timeUpMessageChanged(String newValue) {
@@ -104,6 +107,10 @@ public class Controller {
 
     private void spinMinutesChanged(Integer value) {
         HoursData.getInstance().setNotificationMinutes(value);
+    }
+
+    private void spinWorkHoursChanged(Integer value) {
+        HoursData.getInstance().setWorkHours(value);
     }
 
     void update() {

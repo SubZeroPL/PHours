@@ -19,6 +19,7 @@ class HoursData implements Serializable {
     private int notificationMinutes;
     private LocalTime startTime;
     private LocalTime endTime;
+    private int workHours;
 
     private HoursData() {
         this.currentTime = LocalTime.MIN;
@@ -102,6 +103,14 @@ class HoursData implements Serializable {
 
     String getEndTimeString() {
         return this.endTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public int getWorkHours() {
+        return this.workHours;
+    }
+
+    public void setWorkHours(int workHours) {
+        this.workHours = workHours;
     }
 
     void save() {

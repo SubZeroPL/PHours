@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <TabPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-         minWidth="-Infinity" prefWidth="320.0" tabClosingPolicy="UNAVAILABLE"
-         xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="org.linkuei.Controller">
+         minWidth="-Infinity"
+         prefWidth="320.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1"
+         fx:controller="org.linkuei.Controller">
     <Tab closable="false" text="Work Time">
         <GridPane>
             <columnConstraints>
@@ -123,6 +124,16 @@
                 </Spinner>
                 <Label text="minutes" GridPane.columnIndex="1"/>
             </GridPane>
+            <Label text="Standard work hours:" GridPane.rowIndex="2"/>
+            <Spinner fx:id="spinWorkHours" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <valueFactory>
+                    <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="1" max="10" min="1"
+                                                                    initialValue="8"/>
+                </valueFactory>
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </Spinner>
         </GridPane>
     </Tab>
 </TabPane>
