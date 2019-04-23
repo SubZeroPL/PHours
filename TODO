@@ -1,2 +1,4 @@
 - fancier end-of-time notification
 - progress shown on tray icon
+- include over/under hours in display
+- static workhours (so when entered later it'll show correct starttime)
