@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -16,15 +17,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 
 public class Main extends Application {
+    private static Logger LOG = Logger.getLogger(Main.class.getName());
 
     private Stage stage;
     private TrayIcon trayIcon;
+    private double x, y;
 
     public static void main(String[] args) {
         launch(args);
@@ -59,8 +63,12 @@ public class Main extends Application {
     }
 
     private void onMinimize(Boolean minimized) {
-        if (minimized)
+        if (minimized) {
+            LOG.info(String.format("x: %f, y: %f", this.x, this.y));
+            this.x = this.stage.getX();
+            this.y = this.stage.getY();
             this.stage.hide();
+        }
     }
 
     @Override
@@ -70,17 +78,25 @@ public class Main extends Application {
 
         HoursData.getInstance().load();
 
+        var bounds = Screen.getPrimary().getVisualBounds();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainForm.fxml"));
         Parent root = loader.load();
         ((Controller) loader.getController()).init();
-        stage.setTitle("Job");
-        stage.setOnCloseRequest(this::onClose);
-        stage.iconifiedProperty().addListener((observable, oldValue, minimized) -> this.onMinimize(minimized));
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon_16.png")));
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon_48.png")));
-        stage.setResizable(false);
-        stage.setScene(new Scene(root));
-        stage.show();
+        this.stage.setTitle("Job");
+        this.stage.setOnCloseRequest(this::onClose);
+        this.stage.iconifiedProperty().addListener((observable, oldValue, minimized) -> this.onMinimize(minimized));
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("icon_16.png")));
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream("icon_48.png")));
+        this.stage.setResizable(false);
+        this.stage.setScene(new Scene(root));
+        this.stage.show();
+
+        this.x = (bounds.getWidth() - this.stage.getWidth()) / 2;
+        this.y = (bounds.getHeight() - this.stage.getHeight()) / 2;
+        LOG.info(String.format("x: %f, y: %f", this.x, this.y));
+        this.stage.setX(this.x);
+        this.stage.setY(this.y);
 
         // sets up the tray icon (using awt code run on the swing thread).
         SwingUtilities.invokeLater(this::addAppToTray);
@@ -96,7 +112,7 @@ public class Main extends Application {
 
             // app requires system tray support, just exit if there is no support.
             if (!SystemTray.isSupported()) {
-                System.out.println("No system tray support, application exiting.");
+                LOG.warning("No system tray support, application exiting.");
                 Platform.exit();
             }
 
@@ -113,8 +129,7 @@ public class Main extends Application {
             tray.add(this.trayIcon);
             Notification.getInstance(this.trayIcon);
         } catch (AWTException | IOException e) {
-            System.out.println("Unable to init system tray");
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Unable to init system tray", e);
         }
     }
 
@@ -123,10 +138,15 @@ public class Main extends Application {
      */
     private void showStage() {
         if (this.stage != null && !this.stage.isShowing()) {
-            this.stage.setAlwaysOnTop(true);
+            var bounds = Screen.getPrimary().getVisualBounds();
+
+            // this.stage.setAlwaysOnTop(true);
+            LOG.info(String.format("x: %f, y: %f", this.x, this.y));
+            this.stage.setX(this.x);
+            this.stage.setY(this.y);
             this.stage.show();
-            this.stage.toFront();
-            this.stage.setAlwaysOnTop(false);
+            // this.stage.toFront();
+            // this.stage.setAlwaysOnTop(false);
         }
     }
 
