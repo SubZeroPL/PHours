@@ -62,11 +62,16 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Called when application is being minimized to icon
+     *
+     * @param minimized is application minimizing
+     */
     private void onMinimize(Boolean minimized) {
         if (minimized) {
-            LOG.info(String.format("x: %f, y: %f", this.x, this.y));
             this.x = this.stage.getX();
             this.y = this.stage.getY();
+            this.stage.setIconified(true);
             this.stage.hide();
         }
     }
@@ -94,7 +99,6 @@ public class Main extends Application {
 
         this.x = (bounds.getWidth() - this.stage.getWidth()) / 2;
         this.y = (bounds.getHeight() - this.stage.getHeight()) / 2;
-        LOG.info(String.format("x: %f, y: %f", this.x, this.y));
         this.stage.setX(this.x);
         this.stage.setY(this.y);
 
@@ -138,23 +142,32 @@ public class Main extends Application {
      */
     private void showStage() {
         if (this.stage != null && !this.stage.isShowing()) {
-            var bounds = Screen.getPrimary().getVisualBounds();
-
-            // this.stage.setAlwaysOnTop(true);
-            LOG.info(String.format("x: %f, y: %f", this.x, this.y));
             this.stage.setX(this.x);
             this.stage.setY(this.y);
             this.stage.show();
-            // this.stage.toFront();
-            // this.stage.setAlwaysOnTop(false);
+            this.stage.setIconified(false);
+            this.stage.toFront();
         }
     }
 
+    /**
+     * Hides application stage
+     */
+    private void hideStage() {
+        this.onMinimize(true);
+    }
+
+    /**
+     * Mouse adapter implementation for tray icon clicks
+     */
     private class MyMouseAdapter extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1) {
-                Platform.runLater(Main.this::showStage);
+                if (stage.isIconified())
+                    Platform.runLater(Main.this::showStage);
+                else
+                    Platform.runLater(Main.this::hideStage);
                 e.consume();
             } else {
                 String message = HoursData.getInstance().getNotification();

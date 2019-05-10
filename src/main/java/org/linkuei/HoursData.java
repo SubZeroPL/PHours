@@ -179,6 +179,6 @@ class HoursData implements Serializable {
 
     String getNotification() {
         long percent = Math.round(this.getProgress() * 100);
-        return String.format("%s%s of %s [%d%%]\nStart time:%s\nEnd time:%s", this.isOvertime() ? "-" : "", this.getCurrentTimeString(), this.getMaxTimeString(), percent, getStartTimeString(), getEndTimeString());
+        return String.format("%s%s of %s [%d%%]\nStart time: %s\nEnd time: %s", this.isOvertime() ? "-" : "", this.getCurrentTimeString(), this.getMaxTimeString(), percent, getStartTimeString(), getEndTimeString());
     }
 }
