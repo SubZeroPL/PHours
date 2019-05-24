@@ -26,7 +26,7 @@ public class Notification {
         this.show("PHours", text);
     }
 
-    public void show(String caption, String text) {
+    private void show(String caption, String text) {
         if (StringUtils.isBlank(text))
             return;
         if (this.icon != null)

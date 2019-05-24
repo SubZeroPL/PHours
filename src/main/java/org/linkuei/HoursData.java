@@ -117,6 +117,7 @@ public class HoursData implements Serializable {
         return this.endTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    @SuppressWarnings("unused")
     public int getWorkHours() {
         return this.workHours;
     }
