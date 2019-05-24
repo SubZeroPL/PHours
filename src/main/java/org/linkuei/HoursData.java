@@ -5,17 +5,29 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-class HoursData implements Serializable {
+public class HoursData implements Serializable {
     static final long serialVersionUID = 1L;
 
     private static HoursData INSTANCE = null;
 
     private LocalTime maxTime = LocalTime.of(8, 0);
+    /**
+     * Current worktime
+     */
     private LocalTime currentTime;
+    /**
+     * Hours worked extra (displayed positive) or hours to make up (displayed negative)
+     */
     private LocalTime hours;
+    /**
+     * Are we currently working in overtime
+     */
     private boolean overtime = false;
     private boolean negativeHours;
     private String timeUpMessage;
+    /**
+     * How often to show notifications
+     */
     private int notificationMinutes;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -28,7 +40,7 @@ class HoursData implements Serializable {
         this.endTime = LocalTime.MIN;
     }
 
-    static HoursData getInstance() {
+    public static HoursData getInstance() {
         if (INSTANCE == null)
             INSTANCE = new HoursData();
         return INSTANCE;
@@ -38,20 +50,20 @@ class HoursData implements Serializable {
         return currentTime;
     }
 
-    void setMaxTime(LocalTime maxTime) {
+    public void setMaxTime(LocalTime maxTime) {
         this.maxTime = maxTime;
         this.currentTime = maxTime;
     }
 
-    private String getMaxTimeString() {
+    public String getMaxTimeString() {
         return this.maxTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    String getCurrentTimeString() {
+    public String getCurrentTimeString() {
         return currentTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    String getHoursString() {
+    public String getHoursString() {
         return this.hours.format(DateTimeFormatter.ofPattern((this.negativeHours ? "-" : "") + "H'h' m'm'"));
     }
 
@@ -86,7 +98,7 @@ class HoursData implements Serializable {
         this.notificationMinutes = notificationMinutes;
     }
 
-    public void setStartTimeNow() {
+    void setStartTimeNow() {
         this.startTime = LocalTime.now();
     }
 
@@ -94,7 +106,7 @@ class HoursData implements Serializable {
         return this.startTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    public void setEndTime() {
+    void setEndTime() {
         if (this.startTime == LocalTime.MIN || this.currentTime == LocalTime.MIN)
             return;
         this.endTime = LocalTime.MIN;
@@ -105,11 +117,12 @@ class HoursData implements Serializable {
         return this.endTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    @SuppressWarnings("unused")
     public int getWorkHours() {
         return this.workHours;
     }
 
-    public void setWorkHours(int workHours) {
+    void setWorkHours(int workHours) {
         this.workHours = workHours;
     }
 
@@ -131,7 +144,7 @@ class HoursData implements Serializable {
         }
     }
 
-    void addHours(LocalTime toAdd) {
+    public void addHours(LocalTime toAdd) {
         if (!this.negativeHours) {
             this.hours = this.hours.plusSeconds(toAdd.toSecondOfDay());
         } else {
@@ -142,9 +155,11 @@ class HoursData implements Serializable {
                 this.hours = this.hours.minusSeconds(toAdd.toSecondOfDay());
             }
         }
+        if (this.hours.toSecondOfDay() == 0)
+            this.negativeHours = false;
     }
 
-    void removeHours(LocalTime toRemove) throws IllegalArgumentException {
+    public void removeHours(LocalTime toRemove) throws IllegalArgumentException {
         if (this.negativeHours)
             this.hours = this.hours.plusSeconds(toRemove.toSecondOfDay());
         else {
@@ -155,26 +170,32 @@ class HoursData implements Serializable {
                 this.hours = this.hours.minusSeconds(toRemove.toSecondOfDay());
             }
         }
+        if (this.hours.toSecondOfDay() == 0)
+            this.negativeHours = false;
     }
 
-    void resetCurrentTime() {
+    public void resetHours() {
+        this.hours = LocalTime.MIN;
+    }
+
+    public void resetCurrentTime() {
         this.currentTime = this.maxTime;
         this.overtime = false;
     }
 
-    void minusTime() {
+    public void minusTime() {
         if (this.currentTime == LocalTime.MIN) {
             this.overtime = true;
         }
         this.currentTime = this.overtime ? this.currentTime.plusSeconds(1) : this.currentTime.minusSeconds(1);
     }
 
-    void appendOvertime() {
-        this.removeHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
+    public void appendOvertime() {
+        this.addHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
-    void appendUndertime() {
-        this.addHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
+    public void appendUndertime() {
+        this.removeHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
     String getNotification() {

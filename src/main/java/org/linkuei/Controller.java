@@ -153,7 +153,7 @@ public class Controller {
         update();
     }
 
-    public void miReset(ActionEvent event) {
+    public void miReset() {
         HoursData.getInstance().resetCurrentTime();
         update();
     }

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import static java.awt.Toolkit.getDefaultToolkit;
 
 public class Main extends Application {
-    private static Logger LOG = Logger.getLogger(Main.class.getName());
+    private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
     private Stage stage;
     private TrayIcon trayIcon;

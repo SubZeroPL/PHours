@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 
-public class Notification {
+class Notification {
     private static Notification ourInstance = null;
     private final TrayIcon icon;
 
@@ -12,21 +12,21 @@ public class Notification {
         this.icon = icon;
     }
 
-    public static Notification getInstance(TrayIcon icon) {
+    static Notification getInstance(TrayIcon icon) {
         if (ourInstance == null)
             ourInstance = new Notification(icon);
         return ourInstance;
     }
 
-    public static Notification getInstance() {
+    static Notification getInstance() {
         return getInstance(null);
     }
 
-    public void show(String text) {
+    void show(String text) {
         this.show("PHours", text);
     }
 
-    public void show(String caption, String text) {
+    private void show(String caption, String text) {
         if (StringUtils.isBlank(text))
             return;
         if (this.icon != null)
