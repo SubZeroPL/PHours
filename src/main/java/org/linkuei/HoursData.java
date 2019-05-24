@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-class HoursData implements Serializable {
+public class HoursData implements Serializable {
     static final long serialVersionUID = 1L;
 
     private static HoursData INSTANCE = null;
@@ -28,7 +28,7 @@ class HoursData implements Serializable {
         this.endTime = LocalTime.MIN;
     }
 
-    static HoursData getInstance() {
+    public static HoursData getInstance() {
         if (INSTANCE == null)
             INSTANCE = new HoursData();
         return INSTANCE;
@@ -38,20 +38,20 @@ class HoursData implements Serializable {
         return currentTime;
     }
 
-    void setMaxTime(LocalTime maxTime) {
+    public void setMaxTime(LocalTime maxTime) {
         this.maxTime = maxTime;
         this.currentTime = maxTime;
     }
 
-    private String getMaxTimeString() {
+    public String getMaxTimeString() {
         return this.maxTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    String getCurrentTimeString() {
+    public String getCurrentTimeString() {
         return currentTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    String getHoursString() {
+    public String getHoursString() {
         return this.hours.format(DateTimeFormatter.ofPattern((this.negativeHours ? "-" : "") + "H'h' m'm'"));
     }
 
@@ -62,7 +62,7 @@ class HoursData implements Serializable {
             return (double) currentTime.toSecondOfDay() / maxTime.toSecondOfDay();
     }
 
-    boolean isOvertime() {
+    public boolean isOvertime() {
         return this.overtime;
     }
 
@@ -131,7 +131,7 @@ class HoursData implements Serializable {
         }
     }
 
-    void addHours(LocalTime toAdd) {
+    public void addHours(LocalTime toAdd) {
         if (!this.negativeHours) {
             this.hours = this.hours.plusSeconds(toAdd.toSecondOfDay());
         } else {
@@ -144,7 +144,7 @@ class HoursData implements Serializable {
         }
     }
 
-    void removeHours(LocalTime toRemove) throws IllegalArgumentException {
+    public void removeHours(LocalTime toRemove) throws IllegalArgumentException {
         if (this.negativeHours)
             this.hours = this.hours.plusSeconds(toRemove.toSecondOfDay());
         else {
@@ -157,27 +157,31 @@ class HoursData implements Serializable {
         }
     }
 
-    void resetCurrentTime() {
+    public void resetHours() {
+        this.hours = LocalTime.MIN;
+    }
+
+    public void resetCurrentTime() {
         this.currentTime = this.maxTime;
         this.overtime = false;
     }
 
-    void minusTime() {
+    public void minusTime() {
         if (this.currentTime == LocalTime.MIN) {
             this.overtime = true;
         }
         this.currentTime = this.overtime ? this.currentTime.plusSeconds(1) : this.currentTime.minusSeconds(1);
     }
 
-    void appendOvertime() {
+    public void appendOvertime() {
         this.removeHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
-    void appendUndertime() {
+    public void appendUndertime() {
         this.addHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
-    String getNotification() {
+    public String getNotification() {
         long percent = Math.round(this.getProgress() * 100);
         return String.format("%s%s of %s [%d%%]\nStart time: %s\nEnd time: %s", this.isOvertime() ? "-" : "", this.getCurrentTimeString(), this.getMaxTimeString(), percent, getStartTimeString(), getEndTimeString());
     }
