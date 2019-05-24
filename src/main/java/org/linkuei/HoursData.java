@@ -11,11 +11,23 @@ public class HoursData implements Serializable {
     private static HoursData INSTANCE = null;
 
     private LocalTime maxTime = LocalTime.of(8, 0);
+    /**
+     * Current worktime
+     */
     private LocalTime currentTime;
+    /**
+     * Hours worked extra (displayed positive) or hours to make up (displayed negative)
+     */
     private LocalTime hours;
+    /**
+     * Are we currently working in overtime
+     */
     private boolean overtime = false;
     private boolean negativeHours;
     private String timeUpMessage;
+    /**
+     * How often to show notifications
+     */
     private int notificationMinutes;
     private LocalTime startTime;
     private LocalTime endTime;
