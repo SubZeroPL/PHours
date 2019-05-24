@@ -155,6 +155,8 @@ public class HoursData implements Serializable {
                 this.hours = this.hours.minusSeconds(toAdd.toSecondOfDay());
             }
         }
+        if (this.hours.toSecondOfDay() == 0)
+            this.negativeHours = false;
     }
 
     public void removeHours(LocalTime toRemove) throws IllegalArgumentException {
@@ -168,6 +170,8 @@ public class HoursData implements Serializable {
                 this.hours = this.hours.minusSeconds(toRemove.toSecondOfDay());
             }
         }
+        if (this.hours.toSecondOfDay() == 0)
+            this.negativeHours = false;
     }
 
     public void resetHours() {
