@@ -74,7 +74,7 @@ public class HoursData implements Serializable {
             return (double) currentTime.toSecondOfDay() / maxTime.toSecondOfDay();
     }
 
-    public boolean isOvertime() {
+    boolean isOvertime() {
         return this.overtime;
     }
 
@@ -98,7 +98,7 @@ public class HoursData implements Serializable {
         this.notificationMinutes = notificationMinutes;
     }
 
-    public void setStartTimeNow() {
+    void setStartTimeNow() {
         this.startTime = LocalTime.now();
     }
 
@@ -106,7 +106,7 @@ public class HoursData implements Serializable {
         return this.startTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    public void setEndTime() {
+    void setEndTime() {
         if (this.startTime == LocalTime.MIN || this.currentTime == LocalTime.MIN)
             return;
         this.endTime = LocalTime.MIN;
@@ -122,7 +122,7 @@ public class HoursData implements Serializable {
         return this.workHours;
     }
 
-    public void setWorkHours(int workHours) {
+    void setWorkHours(int workHours) {
         this.workHours = workHours;
     }
 
@@ -198,7 +198,7 @@ public class HoursData implements Serializable {
         this.addHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
-    public String getNotification() {
+    String getNotification() {
         long percent = Math.round(this.getProgress() * 100);
         return String.format("%s%s of %s [%d%%]\nStart time: %s\nEnd time: %s", this.isOvertime() ? "-" : "", this.getCurrentTimeString(), this.getMaxTimeString(), percent, getStartTimeString(), getEndTimeString());
     }
