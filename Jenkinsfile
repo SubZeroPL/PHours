@@ -1,9 +1,16 @@
 pipeline {
     agent any
+    options {
+        timestamps()
+    }
     stages {
         stage('SCM checkout') {
+            options {
+                skipDefaultCheckout()
+            }
             steps {
                 echo 'Checkout'
+                checkout scm 'GitSCM'
             }
         }
         stage('Build') {
