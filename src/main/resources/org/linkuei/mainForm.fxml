@@ -75,9 +75,9 @@
                     <Font size="24.0"/>
                 </font>
             </Label>
-            <Button fx:id="btnAdd" onAction="#btnAdd" text="_Add" userData="1" GridPane.columnIndex="1"
+            <Button onAction="#btnAdd" text="_Add" userData="1" GridPane.columnIndex="1"
                     GridPane.halignment="CENTER"/>
-            <Button fx:id="btnRemove" onAction="#btnAdd" text="_Remove" userData="2" GridPane.columnIndex="1"
+            <Button onAction="#btnAdd" text="_Remove" userData="2" GridPane.columnIndex="1"
                     GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
         </GridPane>
     </Tab>

@@ -154,7 +154,7 @@ public class Controller {
     }
 
     private enum Labels {
-        START("Start"), STOP("Stop");
+        START("_Start"), STOP("S_top");
 
         private final String text;
 
