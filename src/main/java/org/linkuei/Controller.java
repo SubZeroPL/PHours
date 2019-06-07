@@ -37,17 +37,15 @@ public class Controller {
     @FXML
     void btnStart() {
         if (enabled) {
-            enabled = false;
-            timer.shutdown();
+            if (timer != null)
+                timer.shutdown();
             if (notificationTimer != null)
                 notificationTimer.shutdown();
             btnStart.setText(Labels.START.getText());
+            enabled = false;
         } else {
             if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN)
                 return;
-            enabled = true;
-            HoursData.getInstance().setStartTimeNow();
-            HoursData.getInstance().setEndTime();
             TimerTask task = new TimerTask(this);
             timer = new ScheduledThreadPoolExecutor(1);
             timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
@@ -57,7 +55,9 @@ public class Controller {
                 notificationTimer = new ScheduledThreadPoolExecutor(1);
                 notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
             }
+            HoursData.getInstance().recalculate();
             btnStart.setText(Labels.STOP.getText());
+            enabled = true;
         }
     }
 
@@ -96,6 +96,7 @@ public class Controller {
         this.update();
         this.timeUpMessage.setText(HoursData.getInstance().getTimeUpMessage());
         this.spinMinutes.getEditor().setText(String.valueOf(HoursData.getInstance().getNotificationMinutes()));
+        this.spinWorkHours.getEditor().setText(String.valueOf(HoursData.getInstance().getWorkHours()));
         this.timeUpMessage.textProperty().addListener((observable, oldValue, newValue) -> this.timeUpMessageChanged(newValue));
         this.spinMinutes.valueProperty().addListener((observable, oldValue, newValue) -> this.spinMinutesChanged(newValue));
         this.spinWorkHours.valueProperty().addListener(((observable, oldValue, newValue) -> this.spinWorkHoursChanged(newValue)));
@@ -105,11 +106,11 @@ public class Controller {
         HoursData.getInstance().setTimeUpMessage(newValue);
     }
 
-    private void spinMinutesChanged(Integer value) {
+    private void spinMinutesChanged(int value) {
         HoursData.getInstance().setNotificationMinutes(value);
     }
 
-    private void spinWorkHoursChanged(Integer value) {
+    private void spinWorkHoursChanged(int value) {
         HoursData.getInstance().setWorkHours(value);
     }
 
@@ -128,7 +129,7 @@ public class Controller {
         this.lblStartTime.setText(HoursData.getInstance().getStartTimeString());
         this.lblEndTime.setText(HoursData.getInstance().getEndTimeString());
         this.updateProgressBar();
-        if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null) {
+        if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null && enabled) {
             Notification.getInstance().show(HoursData.getInstance().getTimeUpMessage());
         }
     }
@@ -140,26 +141,20 @@ public class Controller {
         this.progress.setStyle(String.format("-fx-accent: RGB(%d, %d, %d)", red, green, blue));
     }
 
-    public void miSetTime(ActionEvent event) {
-        MenuItem menuItem = (MenuItem) event.getSource();
-        int pos = Integer.parseInt(String.valueOf(menuItem.getUserData()));
-        if (pos != 0) {
-            HoursData.getInstance().setMaxTime(LocalTime.of(pos, 0, 0));
-        } else {
-            TimeEntryDialog dialog = new TimeEntryDialog("Enter time (H:m):");
-            Optional<LocalTime> result = dialog.showAndWait();
-            HoursData.getInstance().setMaxTime(result.orElse(LocalTime.ofSecondOfDay(0)));
-        }
-        update();
-    }
-
     public void miReset() {
         HoursData.getInstance().resetCurrentTime();
         update();
     }
 
+    public void miSetStart() {
+        TimeEntryDialog dialog = new TimeEntryDialog("Enter time (H:m):");
+        Optional<LocalTime> result = dialog.showAndWait();
+        result.ifPresent(localTime -> HoursData.getInstance().setStartTime(localTime));
+        update();
+    }
+
     private enum Labels {
-        START("Start"), STOP("Stop");
+        START("_Start"), STOP("S_top");
 
         private final String text;
 
