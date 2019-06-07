@@ -49,6 +49,9 @@ class HoursDataTest {
     @Test
     void shouldDecreaseCurrentTimeByOneSecond() {
         // given
+        hoursData.setWorkHours(8);
+        hoursData.setStartTime(LocalTime.now());
+        hoursData.recalculate();
         // when
         hoursData.minusTime();
         //then

@@ -67,7 +67,7 @@ public class Main extends Application {
      *
      * @param minimized is application minimizing
      */
-    private void onMinimize(Boolean minimized) {
+    private void onMinimize(boolean minimized) {
         if (minimized) {
             this.x = this.stage.getX();
             this.y = this.stage.getY();

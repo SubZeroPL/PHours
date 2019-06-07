@@ -95,7 +95,7 @@ public class HoursData implements Serializable {
         recalculate();
     }
 
-    void recalculate() {
+    public void recalculate() {
         var rest = LocalTime.now().minusSeconds(this.startTime.toSecondOfDay()).truncatedTo(ChronoUnit.SECONDS);
         var workHoursTime = LocalTime.of(this.workHours, 0);
         if (workHoursTime.compareTo(rest) >= 0) {
