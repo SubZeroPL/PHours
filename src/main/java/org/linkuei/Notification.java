@@ -23,13 +23,9 @@ class Notification {
     }
 
     void show(String text) {
-        this.show("PHours", text);
-    }
-
-    private void show(String caption, String text) {
         if (StringUtils.isBlank(text))
             return;
         if (this.icon != null)
-            this.icon.displayMessage(caption, text, TrayIcon.MessageType.INFO);
+            this.icon.displayMessage("PHours", text, TrayIcon.MessageType.INFO);
     }
 }

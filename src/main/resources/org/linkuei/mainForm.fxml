@@ -30,14 +30,7 @@
                 <contextMenu>
                     <ContextMenu>
                         <items>
-                            <Menu mnemonicParsing="false" text="Set time">
-                                <MenuItem fx:id="mi8h" mnemonicParsing="false" onAction="#miSetTime" text="8h"
-                                          userData="8"/>
-                                <MenuItem fx:id="mi7h" mnemonicParsing="false" onAction="#miSetTime" text="7h"
-                                          userData="7"/>
-                                <MenuItem fx:id="miCustom" mnemonicParsing="false" onAction="#miSetTime" text="Custom"
-                                          userData="0"/>
-                            </Menu>
+                            <MenuItem mnemonicParsing="false" onAction="#miSetStart" text="Set start hour"/>
                             <MenuItem mnemonicParsing="false" onAction="#miReset" text="Reset"/>
                         </items>
                     </ContextMenu>
@@ -127,8 +120,7 @@
             <Label text="Standard work hours:" GridPane.rowIndex="2"/>
             <Spinner fx:id="spinWorkHours" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <valueFactory>
-                    <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="1" max="10" min="1"
-                                                                    initialValue="8"/>
+                    <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="1" max="12" min="1"/>
                 </valueFactory>
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>

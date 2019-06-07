@@ -11,16 +11,15 @@ class HoursDataTest {
     private final HoursData hoursData = HoursData.getInstance();
 
     @BeforeEach
-    void setUp() {
-        hoursData.setMaxTime(LocalTime.of(8, 0));
-        hoursData.resetHours();
+    void reset() {
         hoursData.resetCurrentTime();
+        hoursData.resetHours();
     }
 
     @Test
-    void addHoursTest() {
+    void shouldAdd1HourAnd1MinuteToTotalHours() {
         // given
-        LocalTime toAdd = LocalTime.of(1, 1, 0);
+        LocalTime toAdd = LocalTime.of(1, 1);
         // when
         hoursData.addHours(toAdd);
         //then
@@ -28,7 +27,7 @@ class HoursDataTest {
     }
 
     @Test
-    void removeHoursTest() {
+    void shouldRemove1HourFromTotalHours() {
         // given
         LocalTime toAdd = LocalTime.of(1, 1, 0);
         hoursData.addHours(toAdd);
@@ -40,17 +39,15 @@ class HoursDataTest {
     }
 
     @Test
-    void resetCurrentTimeTest() {
+    void shouldResetCurrentTimeToWorkHoursValue() {
         // given
-        hoursData.minusTime();
         // when
-        hoursData.resetCurrentTime();
         //then
-        assertEquals(hoursData.getMaxTimeString(), hoursData.getCurrentTimeString());
+        assertEquals(hoursData.getWorkHours(), hoursData.getCurrentTime().getHour());
     }
 
     @Test
-    void minusTimeTest() {
+    void shouldDecreaseCurrentTimeByOneSecond() {
         // given
         // when
         hoursData.minusTime();
@@ -59,10 +56,10 @@ class HoursDataTest {
     }
 
     @Test
-    void appendOvertimeTest() {
+    void shouldHaveOneMinuteOvertime() {
         // given
-        hoursData.setMaxTime(LocalTime.of(0, 0, 5));
-        hoursData.resetCurrentTime();
+        hoursData.setWorkHours(0);
+        hoursData.setStartTime(LocalTime.now());
         // when
         for (int i = 70; i > 0; i--) {
             hoursData.minusTime();
@@ -73,13 +70,25 @@ class HoursDataTest {
     }
 
     @Test
-    void appendUndertimeTest() {
+    void shouldHaveOneHourUndertime() {
         // given
-        hoursData.setMaxTime(LocalTime.of(0, 1, 0));
+        hoursData.setWorkHours(1);
         hoursData.resetCurrentTime();
         // when
         hoursData.appendUndertime();
         // then
-        assertEquals("-0h 1m", hoursData.getHoursString());
+        assertEquals("-1h 0m", hoursData.getHoursString());
+    }
+
+    @Test
+    void shouldSetEndTimeAsStartTimePlus8Hours() {
+        // given
+        hoursData.resetHours();
+        hoursData.resetCurrentTime();
+        final int START_HOUR = 7;
+        // when
+        hoursData.setStartTime(LocalTime.of(START_HOUR, 0));
+        // then
+        assertEquals(LocalTime.of(START_HOUR + hoursData.getWorkHours(), 0), hoursData.getEndTime());
     }
 }
