@@ -93,6 +93,8 @@ public class HoursData implements Serializable {
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
         recalculate();
+        var workHoursTime = LocalTime.of(this.workHours, 0);
+        this.endTime = this.startTime.plusHours(workHoursTime.getHour());
     }
 
     public void recalculate() {
@@ -105,7 +107,14 @@ public class HoursData implements Serializable {
             this.currentTime = rest.minusSeconds(workHoursTime.toSecondOfDay());
             this.overtime = true;
         }
-        this.endTime = this.startTime.plusHours(workHoursTime.getHour());
+    }
+
+    public void restart() {
+        if (!this.overtime) {
+            this.endTime = LocalTime.now().plusSeconds(this.currentTime.toSecondOfDay());
+        } else {
+            this.endTime = LocalTime.now().minusSeconds(this.currentTime.toSecondOfDay());
+        }
     }
 
     String getStartTimeString() {
