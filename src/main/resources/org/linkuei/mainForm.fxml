@@ -42,7 +42,7 @@
                     <Insets left="2.0" right="2.0" top="5.0"/>
                 </GridPane.margin>
             </ProgressBar>
-            <Button fx:id="btnStart" defaultButton="true" onAction="#btnStart" text="_Start"
+            <Button fx:id="btnStart" defaultButton="true" onAction="#btnStartClick" text="_Start"
                     GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                 <GridPane.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -75,9 +75,9 @@
                     <Font size="24.0"/>
                 </font>
             </Label>
-            <Button onAction="#btnAdd" text="_Add" userData="1" GridPane.columnIndex="1"
+            <Button onAction="#btnAddClick" text="_Add" userData="1" GridPane.columnIndex="1"
                     GridPane.halignment="CENTER"/>
-            <Button onAction="#btnAdd" text="_Remove" userData="2" GridPane.columnIndex="1"
+            <Button onAction="#btnAddClick" text="_Remove" userData="2" GridPane.columnIndex="1"
                     GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
         </GridPane>
     </Tab>

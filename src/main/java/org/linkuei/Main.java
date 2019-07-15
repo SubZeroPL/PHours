@@ -29,6 +29,7 @@ public class Main extends Application {
     private Stage stage;
     private TrayIcon trayIcon;
     private double x, y;
+    private Controller controller;
 
     public static void main(String[] args) {
         launch(args);
@@ -57,6 +58,7 @@ public class Main extends Application {
                 }
             }
             HoursData.getInstance().save();
+            this.controller.stopTimers();
             SystemTray tray = SystemTray.getSystemTray();
             tray.remove(this.trayIcon);
         }
@@ -87,7 +89,8 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainForm.fxml"));
         Parent root = loader.load();
-        ((Controller) loader.getController()).init();
+        this.controller = loader.getController();
+        this.controller.init();
         this.stage.setTitle("Job");
         this.stage.setOnCloseRequest(this::onClose);
         this.stage.iconifiedProperty().addListener((observable, oldValue, minimized) -> this.onMinimize(minimized));

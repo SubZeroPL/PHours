@@ -35,34 +35,23 @@ public class Controller {
     private boolean enabled = false;
 
     @FXML
-    void btnStart() {
+    void btnStartClick() {
         if (enabled) {
-            if (timer != null)
-                timer.shutdown();
-            if (notificationTimer != null)
-                notificationTimer.shutdown();
+            this.stopTimers();
             btnStart.setText(Labels.START.getText());
             enabled = false;
         } else {
             if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN)
                 return;
-            TimerTask task = new TimerTask(this);
-            timer = new ScheduledThreadPoolExecutor(1);
-            timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
-            NotificationTask notificationTask = new NotificationTask();
-            long minutes = HoursData.getInstance().getNotificationMinutes();
-            if (minutes > 0) {
-                notificationTimer = new ScheduledThreadPoolExecutor(1);
-                notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
-            }
-            HoursData.getInstance().recalculate();
+            this.startTimers();
+            HoursData.getInstance().restart();
             btnStart.setText(Labels.STOP.getText());
             enabled = true;
         }
     }
 
     @FXML
-    void btnAdd(ActionEvent event) {
+    void btnAddClick(ActionEvent event) {
         var btn = (Button) event.getSource();
         var id = Integer.parseInt(String.valueOf(btn.getUserData()));
         var dialog = new TextInputDialog("1");
@@ -100,6 +89,29 @@ public class Controller {
         this.timeUpMessage.textProperty().addListener((observable, oldValue, newValue) -> this.timeUpMessageChanged(newValue));
         this.spinMinutes.valueProperty().addListener((observable, oldValue, newValue) -> this.spinMinutesChanged(newValue));
         this.spinWorkHours.valueProperty().addListener(((observable, oldValue, newValue) -> this.spinWorkHoursChanged(newValue)));
+    }
+
+    private void startTimers() {
+        TimerTask task = new TimerTask(this);
+        this.timer = new ScheduledThreadPoolExecutor(1);
+        this.timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
+        NotificationTask notificationTask = new NotificationTask();
+        long minutes = HoursData.getInstance().getNotificationMinutes();
+        if (minutes > 0) {
+            this.notificationTimer = new ScheduledThreadPoolExecutor(1);
+            this.notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
+        }
+    }
+
+    public void stopTimers() {
+        if (this.timer != null) {
+            this.timer.shutdown();
+            this.timer = null;
+        }
+        if (this.notificationTimer != null) {
+            this.notificationTimer.shutdown();
+            this.notificationTimer = null;
+        }
     }
 
     private void timeUpMessageChanged(String newValue) {
