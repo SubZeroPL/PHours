@@ -37,6 +37,7 @@ public class Main extends Application {
 
     private void onClose(WindowEvent event) {
         var alert = new Alert(Alert.AlertType.CONFIRMATION, "Really close?", ButtonType.YES, ButtonType.NO);
+        alert.initOwner(this.stage);
         var res = alert.showAndWait();
         if (res.isPresent() && res.get().getButtonData().isCancelButton())
             event.consume();
@@ -45,12 +46,14 @@ public class Main extends Application {
             if (HoursData.getInstance().getCurrentTime().toSecondOfDay() != 0) {
                 if (HoursData.getInstance().isOvertime()) {
                     alert = new Alert(Alert.AlertType.CONFIRMATION, "Add overtime to hours?", ButtonType.YES, ButtonType.NO);
+                    alert.initOwner(this.stage);
                     res = alert.showAndWait();
                     if (res.isPresent() && res.get() == ButtonType.YES) {
                         HoursData.getInstance().appendOvertime();
                     }
                 } else {
                     alert = new Alert(Alert.AlertType.CONFIRMATION, "Add time to hours?", ButtonType.YES, ButtonType.NO);
+                    alert.initOwner(this.stage);
                     res = alert.showAndWait();
                     if (res.isPresent() && res.get() == ButtonType.YES) {
                         HoursData.getInstance().appendUndertime();
@@ -90,7 +93,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainForm.fxml"));
         Parent root = loader.load();
         this.controller = loader.getController();
-        this.controller.init();
+        this.controller.init(this.stage);
         this.stage.setTitle("Job");
         this.stage.setOnCloseRequest(this::onClose);
         this.stage.iconifiedProperty().addListener((observable, oldValue, minimized) -> this.onMinimize(minimized));
