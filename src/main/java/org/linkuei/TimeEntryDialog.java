@@ -1,5 +1,6 @@
 package org.linkuei;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -31,12 +32,13 @@ class TimeEntryDialog extends Dialog<LocalTime> implements Callback<ButtonType, 
         this.getDialogPane().getButtonTypes().add(ButtonType.OK);
         this.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         this.setResultConverter(this);
+        Platform.runLater(textField::requestFocus);
     }
 
     @Override
     public LocalTime call(ButtonType buttonType) {
         if (buttonType == ButtonType.CANCEL)
             return null;
-        return LocalTime.parse(this.textField.getText(), DateTimeFormatter.ofPattern("H:m"));
+        return LocalTime.parse(this.textField.getText(), DateTimeFormatter.ofPattern("H[:m]"));
     }
 }

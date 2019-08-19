@@ -3,10 +3,9 @@ package org.linkuei;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +32,7 @@ public class Controller {
 
     private ScheduledThreadPoolExecutor timer, notificationTimer;
     private boolean enabled = false;
+    private Stage mainStage = null;
 
     @FXML
     void btnStartClick() {
@@ -54,35 +54,27 @@ public class Controller {
     void btnAddClick(ActionEvent event) {
         var btn = (Button) event.getSource();
         var id = Integer.parseInt(String.valueOf(btn.getUserData()));
-        var dialog = new TextInputDialog("1");
-        dialog.setGraphic(null);
-        dialog.setHeaderText(id == 1 ? "Time to add" : "Time to remove");
-        Optional<String> result = dialog.showAndWait();
-        if (result.isEmpty())
+        var dialog = new TimeEntryDialog(id == 1 ? "Time to add" : "Time to remove");
+        dialog.initOwner(this.mainStage);
+        Optional<LocalTime> result = dialog.showAndWait();
+        if (result.isEmpty()) {
+            event.consume();
             return;
-        try {
-            var time = LocalTime.parse(result.get(), DateTimeFormatter.ofPattern("H[:m]"));
-            switch (id) {
-                case 1:
-                    HoursData.getInstance().addHours(time);
-                    break;
-                case 2:
-                    HoursData.getInstance().removeHours(time);
-                    break;
-            }
-            update();
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Not a number");
-            alert.show();
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
         }
+        switch (id) {
+            case 1:
+                HoursData.getInstance().addHours(result.get());
+                break;
+            case 2:
+                HoursData.getInstance().removeHours(result.get());
+                break;
+        }
+        this.update();
     }
 
-    void init() {
+    void init(Stage mainStage) {
         this.update();
+        this.mainStage = mainStage;
         this.timeUpMessage.setText(HoursData.getInstance().getTimeUpMessage());
         this.spinMinutes.getEditor().setText(String.valueOf(HoursData.getInstance().getNotificationMinutes()));
         this.spinWorkHours.getEditor().setText(String.valueOf(HoursData.getInstance().getWorkHours()));
@@ -160,6 +152,7 @@ public class Controller {
 
     public void miSetStart() {
         TimeEntryDialog dialog = new TimeEntryDialog("Enter time (H:m):");
+        dialog.initOwner(this.mainStage);
         Optional<LocalTime> result = dialog.showAndWait();
         result.ifPresent(localTime -> HoursData.getInstance().setStartTime(localTime));
         update();
