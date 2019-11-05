@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="200.0" prefWidth="300.0"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" fx:controller="org.linkuei.notifications.ToastController">
+    <children>
+        <Label text="Label" fx:id="toastText"/>
+    </children>
+</AnchorPane>

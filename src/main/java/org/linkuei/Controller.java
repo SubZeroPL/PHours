@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.linkuei.notifications.Toast;
 
 import java.time.LocalTime;
 import java.util.Optional;
@@ -36,6 +37,10 @@ public class Controller {
 
     @FXML
     void btnStartClick() {
+        Toast.show("Hello toast");
+        return;
+
+        /*
         if (enabled) {
             this.stopTimers();
             btnStart.setText(Labels.START.getText());
@@ -48,6 +53,7 @@ public class Controller {
             btnStart.setText(Labels.STOP.getText());
             enabled = true;
         }
+         */
     }
 
     @FXML
