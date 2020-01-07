@@ -4,7 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.linkuei.notifications.Toast;
+import org.linkuei.notifications.Notification;
 
 import java.time.LocalTime;
 import java.util.Optional;
@@ -37,7 +37,8 @@ public class Controller {
 
     @FXML
     void btnStartClick() {
-        Toast.show("Hello toast");
+        Notification notification = new Notification();
+        notification.show("html <b>test</b>");
         return;
 
         /*
@@ -140,7 +141,7 @@ public class Controller {
         this.lblEndTime.setText(HoursData.getInstance().getEndTimeString());
         this.updateProgressBar();
         if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null && enabled) {
-            Notification.getInstance().show(HoursData.getInstance().getTimeUpMessage());
+            // Notification.getInstance().show(HoursData.getInstance().getTimeUpMessage());
         }
     }
 

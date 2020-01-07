@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.linkuei.notifications.Notification;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -137,7 +138,6 @@ public class Main extends Application {
 
             // add the application tray icon to the system tray.
             tray.add(this.trayIcon);
-            Notification.getInstance(this.trayIcon);
         } catch (AWTException | IOException e) {
             LOG.log(Level.WARNING, "Unable to init system tray", e);
         }
@@ -177,7 +177,9 @@ public class Main extends Application {
                 e.consume();
             } else {
                 String message = HoursData.getInstance().getNotification();
-                Notification.getInstance(Main.this.trayIcon).show(message);
+                Notification notification = new Notification();
+                notification.show(message);
+                // Notification.getInstance().show(message);
             }
         }
     }
