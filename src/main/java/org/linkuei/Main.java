@@ -122,7 +122,7 @@ public class Main extends Application {
 
             // app requires system tray support, just exit if there is no support.
             if (!SystemTray.isSupported()) {
-                LOG.warning("No system tray support, application exiting.");
+                LOG.severe("No system tray support, application exiting.");
                 Platform.exit();
             }
 
@@ -139,7 +139,7 @@ public class Main extends Application {
             tray.add(this.trayIcon);
             Notification.getInstance(this.trayIcon);
         } catch (AWTException | IOException e) {
-            LOG.log(Level.WARNING, "Unable to init system tray", e);
+            LOG.log(Level.SEVERE, "Unable to init system tray", e);
         }
     }
 
