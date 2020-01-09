@@ -31,7 +31,7 @@ class Notification : MouseAdapter() {
         win.add(pane)
         win.isVisible = true
         val timer = ScheduledThreadPoolExecutor(1)
-        timer.schedule(Runnable {
+        timer.schedule({
             log.info("Hide")
             win.isVisible = false
             win.dispose()

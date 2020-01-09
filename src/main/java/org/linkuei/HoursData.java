@@ -4,11 +4,9 @@ import java.io.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.logging.Logger;
 
 public class HoursData implements Serializable {
     static final long serialVersionUID = 1L;
-    private static final Logger LOG = Logger.getLogger(HoursData.class.getName());
 
     private static HoursData INSTANCE = null;
 
