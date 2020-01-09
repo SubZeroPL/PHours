@@ -33,6 +33,7 @@ public class Main extends Application {
     private Controller controller;
 
     public static void main(String[] args) {
+        LOG.info("Start");
         launch(args);
     }
 
@@ -177,9 +178,7 @@ public class Main extends Application {
                 e.consume();
             } else {
                 String message = HoursData.getInstance().getNotification();
-                Notification notification = new Notification();
-                notification.show(message);
-                // Notification.getInstance().show(message);
+                new Notification().show(message);
             }
         }
     }

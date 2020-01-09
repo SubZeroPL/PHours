@@ -10,8 +10,11 @@ import java.time.LocalTime;
 import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Controller {
+    private static final Logger LOG = Logger.getLogger(Controller.class.getName());
+
     @FXML
     Button btnStart;
     @FXML
@@ -37,11 +40,6 @@ public class Controller {
 
     @FXML
     void btnStartClick() {
-        Notification notification = new Notification();
-        notification.show("html <b>test</b>");
-        return;
-
-        /*
         if (enabled) {
             this.stopTimers();
             btnStart.setText(Labels.START.getText());
@@ -54,7 +52,6 @@ public class Controller {
             btnStart.setText(Labels.STOP.getText());
             enabled = true;
         }
-         */
     }
 
     @FXML
@@ -141,7 +138,8 @@ public class Controller {
         this.lblEndTime.setText(HoursData.getInstance().getEndTimeString());
         this.updateProgressBar();
         if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null && enabled) {
-            // Notification.getInstance().show(HoursData.getInstance().getTimeUpMessage());
+            LOG.info("End time");
+            new Notification().show(HoursData.getInstance().getTimeUpMessage());
         }
     }
 
