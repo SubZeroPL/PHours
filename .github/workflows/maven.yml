@@ -19,8 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: [windows-latest, ubuntu-latest, macOS-latest]
-        os: [ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macOS-latest]
 
     steps:
       - name: Checkout repository
@@ -32,25 +31,14 @@ jobs:
       - name: Build with Maven
         id: maven_build
         run: mvn -B package --file pom.xml
-      - name: Where are we?
-        run: pwd
-      - name: What we have here?
-        run: |
-          ls -l
-          cd target
-          ls -l
-          cd ..
-          cd shade
-          ls -l
-          cd ..          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          # tag_name: ${{ github.ref }}
+          release_name: Nightly ${{ github.sha }}
           draft: true
           prerelease: true
       - name: Upload Release Asset
@@ -61,5 +49,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: shade/phours.jar
-          asset_name: phours.jar
+          asset_name: phours-${{ matrix.os }}.jar
           asset_content_type: application/java-archive
