@@ -30,6 +30,7 @@ jobs:
         with:
           java-version: 11
       - name: Build with Maven
+        id: maven_build
         run: mvn -B package --file pom.xml
       - name: Where are we?
         run: pwd
@@ -59,6 +60,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: shade/*.jar
-          # asset_name: PHours.jar
+          asset_path: shade/phours.jar
+          asset_name: phours.jar
           asset_content_type: application/java-archive
