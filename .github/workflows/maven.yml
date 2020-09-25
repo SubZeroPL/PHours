@@ -1,17 +1,9 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java CI with Maven
+name: Maven manual build
 
 on:
-  push:
-    branches: 
-      - master 
-  pull_request:
-    branches:
-      - master
-  schedule:
-    - cron: "0 2 * * 0"
   workflow_dispatch:
 
 jobs:
@@ -37,8 +29,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Nightly ${{ github.sha }}
+          tag_name: nightly
+          release_name: Nightly
           draft: true
           prerelease: true
       - name: Upload Release Asset
