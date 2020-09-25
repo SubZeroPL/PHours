@@ -37,17 +37,17 @@ jobs:
         id: download_artifacts_win
         uses: actions/download-artifact@v2
         with:
-          name: PHours-windows-latest
+          name: phours-windows-latest
       - name: Download linux build
         id: download_artifacts_linux
         uses: actions/download-artifact@v2
         with:
-          name: PHours-ubuntu-latest
+          name: phours-ubuntu-latest
       - name: Download mac build
         id: download_artifacts_mac
         uses: actions/download-artifact@v2
         with:
-          name: PHours-macOS-latest
+          name: phours-macOS-latest
       - name: What we downloaded
         run: ls -lR
       - name: Create Release
