@@ -23,6 +23,30 @@ jobs:
       - name: Build with Maven
         id: maven_build
         run: mvn -B package --file pom.xml
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: PHours-${{ matrix.os }}
+          path: shade/phours.jar
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download windows build
+        id: download_artifacts_win
+        uses: actions/download-artifact@v2
+        with:
+          name: PHours-windows-latest
+      - name: Download linux build
+        id: download_artifacts_linux
+        uses: actions/download-artifact@v2
+        with:
+          name: PHours-ubuntu-latest
+      - name: Download mac build
+        id: download_artifacts_mac
+        uses: actions/download-artifact@v2
+        with:
+          name: PHours-macOS-latest          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -33,13 +57,33 @@ jobs:
           release_name: Nightly
           draft: true
           prerelease: true
-      - name: Upload Release Asset
-        id: upload-release-asset 
+      - name: Upload Windows Release
+        id: upload-release-asset-win
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: shade/phours.jar
-          asset_name: phours-${{ matrix.os }}.jar
+          asset_path: ${{ steps.download_artifacts_win.outputs.download_path }}
+          asset_name: PHours-windows.jar
+          asset_content_type: application/java-archive
+      - name: Upload Linux Release
+        id: upload-release-asset-linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{ steps.download_artifacts_linux.outputs.download_path }}
+          asset_name: PHours-linux.jar
+          asset_content_type: application/java-archive
+      - name: Upload MacOS Release
+        id: upload-release-asset-mac
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{ steps.download_artifacts_mac.outputs.download_path }}
+          asset_name: PHours-macos.jar
           asset_content_type: application/java-archive
