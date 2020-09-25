@@ -28,6 +28,7 @@ jobs:
         with:
           name: PHours-${{ matrix.os }}
           path: shade/phours.jar
+      
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -46,7 +47,18 @@ jobs:
         id: download_artifacts_mac
         uses: actions/download-artifact@v2
         with:
-          name: PHours-macOS-latest          
+          name: PHours-macOS-latest
+      - name: What we downloaded
+        run: |
+          echo ${{ steps.download_artifacts_win.outputs.download_path }}
+          cd ${{ steps.download_artifacts_win.outputs.download_path }}
+          ls -lR
+          echo ${{ steps.download_artifacts_linux.outputs.download_path }}
+          cd ${{ steps.download_artifacts_linux.outputs.download_path }}
+          ls -lR
+          echo ${{ steps.download_artifacts_mac.outputs.download_path }}
+          cd ${{ steps.download_artifacts_mac.outputs.download_path }}
+          ls -lR
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
