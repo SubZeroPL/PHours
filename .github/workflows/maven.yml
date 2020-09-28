@@ -62,9 +62,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: nightly
-          release_name: Nightly
-          draft: true
+          tag_name: v0.4-alpha
+          release_name: Nightly build
+          draft: false
           prerelease: true
           body: Nightly build ${{ steps.get_date.outputs.release_date }}
       - name: Upload Windows Release
