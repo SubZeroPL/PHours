@@ -32,6 +32,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      BUILD_DATETIME: $(date +%Y%m%d%H%M%S)
     steps:
       - name: Download windows build
         id: download_artifacts_win
@@ -66,18 +68,16 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATETIME: $(date +%Y%m%d%H%M%S)
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: windows/phours.jar
-          asset_name: PHours-windows_${{ jobs.upload-release-asset-win.steps.env.DATETIME }}.jar
+          asset_name: PHours-windows_$BUILD_DATETIME.jar
           asset_content_type: application/java-archive
       - name: Upload Linux Release
         id: upload-release-asset-linux
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATETIME: $(date +%Y%m%d%H%M%S)
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: linux/phours.jar
@@ -88,7 +88,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATETIME: $(date +%Y%m%d%H%M%S)
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: macos/phours.jar
