@@ -32,9 +32,12 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      BUILD_DATETIME: $(date +%Y%m%d%H%M%S)
     steps:
+      - name: Get current date
+        id: get_date
+        run: |
+          echo "::set-output name=build_date::$(date +%Y%m%d%H%M%S)"
+          echo "::set-output name=release_date::$(date)"
       - name: Download windows build
         id: download_artifacts_win
         uses: actions/download-artifact@v2
@@ -63,7 +66,7 @@ jobs:
           release_name: Nightly
           draft: true
           prerelease: true
-          body: Nightly build $(date)
+          body: Nightly build ${{ steps.get_date.outputs.release_date }}
       - name: Upload Windows Release
         id: upload-release-asset-win
         uses: actions/upload-release-asset@v1
@@ -72,7 +75,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: windows/phours.jar
-          asset_name: PHours-windows_${{ env.BUILD_DATETIME }}.jar
+          asset_name: PHours-windows_${{ steps.get_date.outputs.build_date }}.jar
           asset_content_type: application/java-archive
       - name: Upload Linux Release
         id: upload-release-asset-linux
@@ -82,7 +85,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: linux/phours.jar
-          asset_name: PHours-linux_${{ env.BUILD_DATETIME }}.jar
+          asset_name: PHours-linux_${{ steps.get_date.outputs.build_date }}.jar
           asset_content_type: application/java-archive
       - name: Upload MacOS Release
         id: upload-release-asset-mac
@@ -92,5 +95,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: macos/phours.jar
-          asset_name: PHours-macos_${{ env.BUILD_DATETIME }}.jar
+          asset_name: PHours-macos_${{ steps.get_date.outputs.build_date }}.jar
           asset_content_type: application/java-archive
