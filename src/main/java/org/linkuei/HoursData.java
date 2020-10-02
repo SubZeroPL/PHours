@@ -4,9 +4,12 @@ import java.io.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HoursData implements Serializable {
     static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(HoursData.class.getName());
 
     private static HoursData INSTANCE = null;
 
@@ -154,8 +157,10 @@ public class HoursData implements Serializable {
     void load() {
         try (FileInputStream fileInputStream = new FileInputStream("hours.dat"); ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             INSTANCE = (HoursData) objectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.info("Configuration file not found, new will be created");
+        } catch (ClassNotFoundException e) {
+            LOG.log(Level.SEVERE, "Config file parsing error", e);
         }
     }
 
