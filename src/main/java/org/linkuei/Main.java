@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.linkuei.notifications.Notification;
+import org.linkuei.notifications.NotificationManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -178,7 +178,7 @@ public class Main extends Application {
                 e.consume();
             } else {
                 String message = HoursData.getInstance().getNotification();
-                new Notification().show(message);
+                NotificationManager.INSTANCE.show(message);
             }
         }
     }
