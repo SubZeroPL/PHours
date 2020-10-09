@@ -1,5 +1,7 @@
 package org.linkuei;
 
+import org.linkuei.notifications.NotificationData;
+
 import java.io.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -218,8 +220,8 @@ public class HoursData implements Serializable {
         this.removeHours(this.currentTime.truncatedTo(ChronoUnit.MINUTES));
     }
 
-    String getNotification() {
-        long percent = Math.round(this.getProgress() * 100);
-        return String.format("%s%s of %s [%d%%]\nStart time: %s\nEnd time: %s", this.isOvertime() ? "-" : "", this.getCurrentTimeString(), this.getWorkHoursString(), percent, getStartTimeString(), getEndTimeString());
+    public NotificationData getNotificationData() {
+        return new NotificationData(this.currentTime, this.workHours, this.getProgress(), this.startTime, this.endTime,
+                this.overtime, this.timeUpMessage);
     }
 }

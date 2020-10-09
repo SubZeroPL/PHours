@@ -64,6 +64,7 @@ public class Main extends Application {
             }
             HoursData.getInstance().save();
             this.controller.stopTimers();
+            NotificationManager.INSTANCE.clear();
             SystemTray tray = SystemTray.getSystemTray();
             tray.remove(this.trayIcon);
         }
@@ -177,8 +178,7 @@ public class Main extends Application {
                     Platform.runLater(Main.this::hideStage);
                 e.consume();
             } else {
-                String message = HoursData.getInstance().getNotification();
-                NotificationManager.INSTANCE.show(message);
+                NotificationManager.INSTANCE.show();
             }
         }
     }

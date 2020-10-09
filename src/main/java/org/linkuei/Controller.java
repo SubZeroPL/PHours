@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.linkuei.notifications.NotificationManager;
+import org.linkuei.notifications.NotificationType;
 
 import java.time.LocalTime;
 import java.util.Optional;
@@ -141,7 +142,7 @@ public class Controller {
         this.updateProgressBar();
         if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null && enabled) {
             LOG.info("End time");
-            NotificationManager.INSTANCE.show(HoursData.getInstance().getTimeUpMessage());
+            NotificationManager.INSTANCE.show(NotificationType.END_OF_TIME);
         }
     }
 
