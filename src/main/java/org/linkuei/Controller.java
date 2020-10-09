@@ -33,6 +33,8 @@ public class Controller {
     Label lblEndTime;
     @FXML
     Spinner<Integer> spinWorkHours;
+    @FXML
+    Spinner<Integer> spinSeconds;
 
     private ScheduledThreadPoolExecutor timer, notificationTimer;
     private boolean enabled = false;
