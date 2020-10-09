@@ -6,6 +6,6 @@ import org.linkuei.notifications.NotificationManager;
 class NotificationTask implements Runnable {
     @Override
     public void run() {
-        Platform.runLater(() -> NotificationManager.INSTANCE.show());
+        Platform.runLater(NotificationManager.INSTANCE::show);
     }
 }
