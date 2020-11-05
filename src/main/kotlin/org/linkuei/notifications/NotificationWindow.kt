@@ -1,21 +1,22 @@
 package org.linkuei.notifications
 
-import org.linkuei.HoursData
+import org.linkuei.HoursDataHandler
+import org.linkuei.HoursDataHandler.currentTimeString
+import org.linkuei.HoursDataHandler.endTimeString
+import org.linkuei.HoursDataHandler.startTimeString
 import java.awt.GraphicsEnvironment
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 import javax.swing.BorderFactory
 import javax.swing.JEditorPane
 import javax.swing.JWindow
+import javax.swing.Timer
 import javax.swing.border.BevelBorder
 import kotlin.math.roundToInt
 
-private const val TIMEOUT: Long = 5
 private const val PAD = 10
 
-class NotificationWindow(private val position: Int) : JWindow() {
+class NotificationWindow(private val position: Int, private val type: NotificationType = NotificationType.PROGRESS) : JWindow() {
     private val textPane: JEditorPane = JEditorPane()
-    private val timer: ScheduledThreadPoolExecutor = ScheduledThreadPoolExecutor(1)
+    private val timer: Timer = Timer(0) { _ -> close() }
 
     init {
         val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -31,25 +32,29 @@ class NotificationWindow(private val position: Int) : JWindow() {
         this.add(this.textPane)
     }
 
-    fun showNotification(type: NotificationType) {
-        val data = HoursData.getInstance().notificationData
-        val percent = (data.progress * 100).roundToInt()
-        val text = String.format(
-                "%s%s of %s [%d%%]<br />" +
-                        "<b>Start time:</b> %s<br />" +
-                        "<b>End time:</b> %s",
-                if (data.overtime) "-" else "", data.currentTime, data.workhours, percent, data.startTime, data.endTime)
-        this.textPane.text = if (type == NotificationType.PROGRESS) text else data.timeUpMessage
+    fun showNotification() {
+        val data = HoursDataHandler.hoursData
+        val percent = (HoursDataHandler.progress * 100).roundToInt()
+        val text = "${if (data.isOvertime) "-" else ""}${data.currentTimeString} of ${data.workHours} [${percent}%]<br />" +
+                "<b>Start time:</b> ${data.startTimeString}<br />" +
+                "<b>End time:</b> ${data.endTimeString}"
+        val tu = "<b>${data.timeUpMessage}</b>"
+        this.textPane.text = if (this.type == NotificationType.PROGRESS) text else tu
         this.isVisible = true
-        this.timer.schedule({
-            close()
-        }, TIMEOUT, TimeUnit.SECONDS)
+
+        this.timer.initialDelay = (data.notificationDuration * 1000)
+        this.timer.delay = 0
+        this.timer.isRepeats = false
+        this.timer.start()
     }
 
-    fun close() {
-        this.timer.shutdownNow()
-        this.isVisible = false
-        this.dispose()
-        NotificationManager.remove()
+    fun close(force: Boolean = false) {
+        this.timer.stop()
+        if (force || this.type == NotificationType.PROGRESS ||
+                (HoursDataHandler.hoursData.autohideEotNotification && this.type == NotificationType.END_OF_TIME)) {
+            this.isVisible = false
+            this.dispose()
+            NotificationManager.remove()
+        }
     }
 }

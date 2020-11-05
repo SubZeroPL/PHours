@@ -45,24 +45,24 @@ public class Main extends Application {
             event.consume();
         else {
             Platform.setImplicitExit(true);
-            if (HoursData.getInstance().getCurrentTime().toSecondOfDay() != 0) {
-                if (HoursData.getInstance().isOvertime()) {
+            if (HoursDataHandler.INSTANCE.getHoursData().getCurrentTime().toSecondOfDay() != 0) {
+                if (HoursDataHandler.INSTANCE.getHoursData().isOvertime()) {
                     alert = new Alert(Alert.AlertType.CONFIRMATION, "Add overtime to hours?", ButtonType.YES, ButtonType.NO);
                     alert.initOwner(this.stage);
                     res = alert.showAndWait();
                     if (res.isPresent() && res.get() == ButtonType.YES) {
-                        HoursData.getInstance().appendOvertime();
+                        HoursDataHandler.INSTANCE.appendOvertime();
                     }
                 } else {
                     alert = new Alert(Alert.AlertType.CONFIRMATION, "Add time to hours?", ButtonType.YES, ButtonType.NO);
                     alert.initOwner(this.stage);
                     res = alert.showAndWait();
                     if (res.isPresent() && res.get() == ButtonType.YES) {
-                        HoursData.getInstance().appendUndertime();
+                        HoursDataHandler.INSTANCE.appendUndertime();
                     }
                 }
             }
-            HoursData.getInstance().save();
+            HoursDataHandler.INSTANCE.save();
             this.controller.stopTimers();
             NotificationManager.INSTANCE.clear();
             SystemTray tray = SystemTray.getSystemTray();
@@ -88,8 +88,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         Platform.setImplicitExit(false);
-
-        HoursData.getInstance().load();
 
         var bounds = Screen.getPrimary().getVisualBounds();
 

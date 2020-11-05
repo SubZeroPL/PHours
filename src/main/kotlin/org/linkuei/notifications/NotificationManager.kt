@@ -5,9 +5,9 @@ object NotificationManager {
 
     @JvmOverloads
     fun show(type: NotificationType = NotificationType.PROGRESS) {
-        val win = NotificationWindow(activeNotifications.maxSize() + 1)
+        val win = NotificationWindow(activeNotifications.maxSize() + 1, type)
         activeNotifications.push(win)
-        win.showNotification(type)
+        win.showNotification()
     }
 
     fun remove() {
@@ -20,7 +20,7 @@ object NotificationManager {
 
     fun clear() {
         for (win in activeNotifications) {
-            win.close()
+            win.close(true)
         }
     }
 }

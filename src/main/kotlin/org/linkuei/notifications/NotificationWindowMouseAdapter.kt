@@ -9,7 +9,7 @@ class NotificationWindowMouseAdapter : MouseAdapter() {
         if (e?.component is JEditorPane) {
             val win = (e.component as JEditorPane).topLevelAncestor
             if (win is NotificationWindow) {
-                win.close()
+                win.close(true)
             }
         }
     }

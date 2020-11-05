@@ -12,7 +12,7 @@ class TimerTask implements Runnable {
     @Override
     public void run() {
         Platform.runLater(() -> {
-            HoursData.getInstance().minusTime();
+            HoursDataHandler.INSTANCE.minusTime();
             controller.update();
         });
     }
