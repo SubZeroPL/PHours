@@ -78,23 +78,19 @@ object HoursDataHandler {
     }
 
     private fun load(): HoursData {
+        var data: HoursData? = null
         try {
             val str = File("hours.json").readText()
-            if (str.isBlank()) {
-                LOG.warning("Problem loading configuration file, the file will be recreated")
-                return HoursData()
+            data = Gson().fromJson(str, HoursData::class.java)
+            if (data == null) {
+                LOG.info("Configuration file could not be read, new will be created")
             }
-            return Gson().fromJson(str, HoursData::class.java)
         } catch (e: IOException) {
             LOG.info("Configuration file not found, new will be created")
-            return HoursData()
         } catch (e: JsonSyntaxException) {
             LOG.log(Level.WARNING, "Problem loading configuration file, the file will be recreated", e)
-            return HoursData()
-        } catch (e: ClassNotFoundException) {
-            LOG.log(Level.SEVERE, "Config file parsing error", e)
-            throw Exception("Config file parsing error")
         }
+        return data ?: HoursData()
     }
 
     fun addHours(toAdd: LocalTime) {
