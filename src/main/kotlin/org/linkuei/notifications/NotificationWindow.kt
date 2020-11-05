@@ -9,7 +9,7 @@ import javax.swing.BorderFactory
 import javax.swing.JEditorPane
 import javax.swing.JWindow
 import javax.swing.Timer
-import javax.swing.border.BevelBorder
+import javax.swing.border.EtchedBorder
 import kotlin.math.roundToInt
 
 private const val PAD = 10
@@ -27,7 +27,7 @@ class NotificationWindow(private val position: Int, private val type: Notificati
         this.isAlwaysOnTop = true
         this.textPane.isEditable = false
         this.textPane.contentType = "text/html"
-        this.textPane.border = BorderFactory.createBevelBorder(BevelBorder.RAISED)
+        this.textPane.border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED)
         this.textPane.addMouseListener(NotificationWindowMouseAdapter())
         this.add(this.textPane)
     }
@@ -37,9 +37,11 @@ class NotificationWindow(private val position: Int, private val type: Notificati
         val percent = (HoursDataHandler.progress * 100).roundToInt()
         val text = "${if (data.isOvertime) "-" else ""}${data.currentTimeString} of ${data.workHours} [${percent}%]<br />" +
                 "<b>Start time:</b> ${data.startTimeString}<br />" +
-                "<b>End time:</b> ${data.endTimeString}"
+                "<b>End time:</b> ${data.endTimeString}" +
+                "</div>"
         val tu = "<b>${data.timeUpMessage}</b>"
-        this.textPane.text = if (this.type == NotificationType.PROGRESS) text else tu
+        val container = "<div style='padding: 5px'>${if (this.type == NotificationType.PROGRESS) text else tu}</div>"
+        this.textPane.text = container
         this.isVisible = true
 
         this.timer.initialDelay = (data.notificationDuration * 1000)
