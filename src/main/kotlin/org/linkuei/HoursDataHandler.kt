@@ -119,6 +119,10 @@ object HoursDataHandler {
         if (this.hoursData.hours.toSecondOfDay() == 0) this.hoursData.isNegativeHours = false
     }
 
+    fun resetHours() {
+        this.hoursData.hours = LocalTime.MIN
+    }
+
     fun resetCurrentTime() {
         this.hoursData.currentTime = LocalTime.of(this.hoursData.workHours, 0)
         this.hoursData.isOvertime = false

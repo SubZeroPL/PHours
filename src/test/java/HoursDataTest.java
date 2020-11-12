@@ -13,7 +13,7 @@ class HoursDataTest {
     @BeforeEach
     void reset() {
         hoursDataHandler.resetCurrentTime();
-        // hoursData.resetHours();
+        hoursDataHandler.resetHours();
     }
 
     @Test
