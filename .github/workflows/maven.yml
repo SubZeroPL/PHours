@@ -1,0 +1,99 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Maven manual build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macOS-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build with Maven
+        id: maven_build
+        run: mvn -B package --file pom.xml
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: phours-${{ matrix.os }}
+          path: shade/phours.jar
+      
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date
+        id: get_date
+        run: |
+          echo "::set-output name=build_date::$(date +%Y%m%d%H%M%S)"
+          echo "::set-output name=release_date::$(date)"
+      - name: Download windows build
+        id: download_artifacts_win
+        uses: actions/download-artifact@v2
+        with:
+          name: phours-windows-latest
+          path: windows
+      - name: Download linux build
+        id: download_artifacts_linux
+        uses: actions/download-artifact@v2
+        with:
+          name: phours-ubuntu-latest
+          path: linux
+      - name: Download mac build
+        id: download_artifacts_mac
+        uses: actions/download-artifact@v2
+        with:
+          name: phours-macOS-latest
+          path: macos
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v0.4-alpha
+          release_name: Nightly build
+          draft: false
+          prerelease: true
+          body: Nightly build ${{ steps.get_date.outputs.release_date }}
+      - name: Upload Windows Release
+        id: upload-release-asset-win
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: windows/phours.jar
+          asset_name: PHours-windows_${{ steps.get_date.outputs.build_date }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Linux Release
+        id: upload-release-asset-linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: linux/phours.jar
+          asset_name: PHours-linux_${{ steps.get_date.outputs.build_date }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload MacOS Release
+        id: upload-release-asset-mac
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: macos/phours.jar
+          asset_name: PHours-macos_${{ steps.get_date.outputs.build_date }}.jar
+          asset_content_type: application/java-archive
