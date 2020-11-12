@@ -56,7 +56,7 @@ class NotificationWindow(private val position: Int, private val type: Notificati
                 (HoursDataHandler.hoursData.autohideEotNotification && this.type == NotificationType.END_OF_TIME)) {
             this.isVisible = false
             this.dispose()
-            NotificationManager.remove()
+            NotificationManager.remove(this.type)
         }
     }
 }
