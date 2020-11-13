@@ -32,4 +32,8 @@ jobs:
           release_name: Release PHours v${{ steps.get_version.outputs.version }}
           draft: true
           prerelease: false
-          body: ${{ steps.changelog.outputs.changelog }}
+          body: |
+            ## Release
+            PHours v${{ steps.get_version.outputs.version }}
+            Changelog:
+            ${{ steps.changelog.outputs.changelog }}
