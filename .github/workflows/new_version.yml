@@ -6,10 +6,12 @@ name: After merge of a PR (also can be run manually)
 on:
   pull_request:
     branches: [ master ]
+    types: [ closed ]
   workflow_dispatch:
 
 jobs:
   build: # build application for windows, linux and macos and upload artifacts
+    if: github.event.pull_request.merged == true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,6 +35,7 @@ jobs:
           path: shade/phours.jar
         
   test: # runs unit tests on windows, linux and macos
+    if: github.event.pull_request.merged == true
     needs: build
     runs-on: ${{ matrix.os }}
     strategy:
@@ -51,6 +54,7 @@ jobs:
         run: mvn -B test --file pom.xml
   
   release:
+    if: github.event.pull_request.merged == true
     needs: [ build,test ]
     runs-on: ubuntu-latest
     steps:
