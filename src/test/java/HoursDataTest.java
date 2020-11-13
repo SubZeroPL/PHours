@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.linkuei.HoursData;
+import org.linkuei.HoursDataHandler;
 
 import java.time.LocalTime;
 
@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HoursDataTest {
 
-    private final HoursData hoursData = HoursData.getInstance();
+    private final HoursDataHandler hoursDataHandler = HoursDataHandler.INSTANCE;
 
     @BeforeEach
     void reset() {
-        hoursData.resetCurrentTime();
-        hoursData.resetHours();
+        hoursDataHandler.resetCurrentTime();
+        hoursDataHandler.resetHours();
     }
 
     @Test
@@ -21,21 +21,21 @@ class HoursDataTest {
         // given
         LocalTime toAdd = LocalTime.of(1, 1);
         // when
-        hoursData.addHours(toAdd);
+        hoursDataHandler.addHours(toAdd);
         //then
-        assertEquals("1h 1m", hoursData.getHoursString());
+        assertEquals("1h 1m", hoursDataHandler.getHoursString(hoursDataHandler.getHoursData()));
     }
 
     @Test
     void shouldRemove1HourFromTotalHours() {
         // given
         LocalTime toAdd = LocalTime.of(1, 1, 0);
-        hoursData.addHours(toAdd);
+        hoursDataHandler.addHours(toAdd);
         LocalTime toRemove = LocalTime.of(1, 0, 0);
         // when
-        hoursData.removeHours(toRemove);
+        hoursDataHandler.removeHours(toRemove);
         //then
-        assertEquals("0h 1m", hoursData.getHoursString());
+        assertEquals("0h 1m", hoursDataHandler.getHoursString(hoursDataHandler.getHoursData()));
     }
 
     @Test
@@ -43,55 +43,55 @@ class HoursDataTest {
         // given
         // when
         //then
-        assertEquals(hoursData.getWorkHours(), hoursData.getCurrentTime().getHour());
+        assertEquals(hoursDataHandler.getHoursData().getWorkHours(), hoursDataHandler.getHoursData().getCurrentTime().getHour());
     }
 
     @Test
     void shouldDecreaseCurrentTimeByOneSecond() {
         // given
-        hoursData.setWorkHours(8);
-        hoursData.setStartTime(LocalTime.now());
-        hoursData.recalculate();
+        hoursDataHandler.getHoursData().setWorkHours(8);
+        hoursDataHandler.setStartTime(LocalTime.now());
+        hoursDataHandler.recalculate();
         // when
-        hoursData.minusTime();
+        hoursDataHandler.minusTime();
         //then
-        assertEquals("07:59:59", hoursData.getCurrentTimeString());
+        assertEquals("07:59:59", hoursDataHandler.getCurrentTimeString(hoursDataHandler.getHoursData()));
     }
 
     @Test
     void shouldHaveOneMinuteOvertime() {
         // given
-        hoursData.setWorkHours(0);
-        hoursData.setStartTime(LocalTime.now());
+        hoursDataHandler.getHoursData().setWorkHours(0);
+        hoursDataHandler.setStartTime(LocalTime.now());
         // when
         for (int i = 70; i > 0; i--) {
-            hoursData.minusTime();
+            hoursDataHandler.minusTime();
         }
-        hoursData.appendOvertime();
+        hoursDataHandler.appendOvertime();
         // then
-        assertEquals("0h 1m", hoursData.getHoursString());
+        assertEquals("0h 1m", hoursDataHandler.getHoursString(hoursDataHandler.getHoursData()));
     }
 
     @Test
     void shouldHaveOneHourUndertime() {
         // given
-        hoursData.setWorkHours(1);
-        hoursData.resetCurrentTime();
+        hoursDataHandler.getHoursData().setWorkHours(1);
+        hoursDataHandler.resetCurrentTime();
         // when
-        hoursData.appendUndertime();
+        hoursDataHandler.appendUndertime();
         // then
-        assertEquals("-1h 0m", hoursData.getHoursString());
+        assertEquals("-1h 0m", hoursDataHandler.getHoursString(hoursDataHandler.getHoursData()));
     }
 
     @Test
     void shouldSetEndTimeAsStartTimePlus8Hours() {
         // given
-        hoursData.resetHours();
-        hoursData.resetCurrentTime();
+        // hoursDataHandler.resetHours();
+        hoursDataHandler.resetCurrentTime();
         final int START_HOUR = 7;
         // when
-        hoursData.setStartTime(LocalTime.of(START_HOUR, 0));
+        hoursDataHandler.setStartTime(LocalTime.of(START_HOUR, 0));
         // then
-        assertEquals(LocalTime.of(START_HOUR + hoursData.getWorkHours(), 0), hoursData.getEndTime());
+        assertEquals(LocalTime.of(START_HOUR + hoursDataHandler.getHoursData().getWorkHours(), 0), hoursDataHandler.getHoursData().getEndTime());
     }
 }

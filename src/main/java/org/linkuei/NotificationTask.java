@@ -1,10 +1,11 @@
 package org.linkuei;
 
 import javafx.application.Platform;
+import org.linkuei.notifications.NotificationManager;
 
 class NotificationTask implements Runnable {
     @Override
     public void run() {
-        Platform.runLater(() -> Notification.getInstance().show(HoursData.getInstance().getNotification()));
+        Platform.runLater(NotificationManager.INSTANCE::show);
     }
 }

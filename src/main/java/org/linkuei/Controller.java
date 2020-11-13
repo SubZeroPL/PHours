@@ -4,13 +4,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.linkuei.notifications.NotificationManager;
+import org.linkuei.notifications.NotificationType;
 
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Controller {
+    private static final Logger LOG = Logger.getLogger(Controller.class.getName());
+
     @FXML
     Button btnStart;
     @FXML
@@ -29,6 +34,10 @@ public class Controller {
     Label lblEndTime;
     @FXML
     Spinner<Integer> spinWorkHours;
+    @FXML
+    Spinner<Integer> spinSeconds;
+    @FXML
+    CheckBox cbEot;
 
     private ScheduledThreadPoolExecutor timer, notificationTimer;
     private boolean enabled = false;
@@ -41,10 +50,10 @@ public class Controller {
             btnStart.setText(Labels.START.getText());
             enabled = false;
         } else {
-            if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN)
+            if (HoursDataHandler.INSTANCE.getHoursData().getCurrentTime() == LocalTime.MIN)
                 return;
             this.startTimers();
-            HoursData.getInstance().restart();
+            HoursDataHandler.INSTANCE.restart();
             btnStart.setText(Labels.STOP.getText());
             enabled = true;
         }
@@ -63,10 +72,10 @@ public class Controller {
         }
         switch (id) {
             case 1:
-                HoursData.getInstance().addHours(result.get());
+                HoursDataHandler.INSTANCE.addHours(result.get());
                 break;
             case 2:
-                HoursData.getInstance().removeHours(result.get());
+                HoursDataHandler.INSTANCE.removeHours(result.get());
                 break;
         }
         this.update();
@@ -75,12 +84,16 @@ public class Controller {
     void init(Stage mainStage) {
         this.update();
         this.mainStage = mainStage;
-        this.timeUpMessage.setText(HoursData.getInstance().getTimeUpMessage());
-        this.spinMinutes.getEditor().setText(String.valueOf(HoursData.getInstance().getNotificationMinutes()));
-        this.spinWorkHours.getEditor().setText(String.valueOf(HoursData.getInstance().getWorkHours()));
+        this.timeUpMessage.setText(HoursDataHandler.INSTANCE.getHoursData().getTimeUpMessage());
+        this.spinMinutes.getEditor().setText(String.valueOf(HoursDataHandler.INSTANCE.getHoursData().getNotificationMinutes()));
+        this.spinWorkHours.getEditor().setText(String.valueOf(HoursDataHandler.INSTANCE.getHoursData().getWorkHours()));
         this.timeUpMessage.textProperty().addListener((observable, oldValue, newValue) -> this.timeUpMessageChanged(newValue));
         this.spinMinutes.valueProperty().addListener((observable, oldValue, newValue) -> this.spinMinutesChanged(newValue));
+        this.spinSeconds.getEditor().setText(String.valueOf(HoursDataHandler.INSTANCE.getHoursData().getNotificationDuration()));
+        this.spinSeconds.valueProperty().addListener((observable, oldValue, newValue) -> this.spinSecondsChanged(newValue));
         this.spinWorkHours.valueProperty().addListener(((observable, oldValue, newValue) -> this.spinWorkHoursChanged(newValue)));
+        this.cbEot.setSelected(HoursDataHandler.INSTANCE.getHoursData().getAutohideEotNotification());
+        this.cbEot.selectedProperty().addListener((observable, oldValue, newValue) -> this.cbEotChanged(newValue));
     }
 
     private void startTimers() {
@@ -88,7 +101,7 @@ public class Controller {
         this.timer = new ScheduledThreadPoolExecutor(1);
         this.timer.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
         NotificationTask notificationTask = new NotificationTask();
-        long minutes = HoursData.getInstance().getNotificationMinutes();
+        long minutes = HoursDataHandler.INSTANCE.getHoursData().getNotificationMinutes();
         if (minutes > 0) {
             this.notificationTimer = new ScheduledThreadPoolExecutor(1);
             this.notificationTimer.scheduleAtFixedRate(notificationTask, minutes, minutes, TimeUnit.MINUTES);
@@ -106,35 +119,44 @@ public class Controller {
         }
     }
 
+    private void spinSecondsChanged(int value) {
+        HoursDataHandler.INSTANCE.getHoursData().setNotificationDuration(value);
+    }
+
+    private void cbEotChanged(boolean value) {
+        HoursDataHandler.INSTANCE.getHoursData().setAutohideEotNotification(value);
+    }
+
     private void timeUpMessageChanged(String newValue) {
-        HoursData.getInstance().setTimeUpMessage(newValue);
+        HoursDataHandler.INSTANCE.getHoursData().setTimeUpMessage(newValue);
     }
 
     private void spinMinutesChanged(int value) {
-        HoursData.getInstance().setNotificationMinutes(value);
+        HoursDataHandler.INSTANCE.getHoursData().setNotificationMinutes(value);
     }
 
     private void spinWorkHoursChanged(int value) {
-        HoursData.getInstance().setWorkHours(value);
+        HoursDataHandler.INSTANCE.getHoursData().setWorkHours(value);
     }
 
     void update() {
-        this.lblTime.setText(HoursData.getInstance().getCurrentTimeString());
-        if (HoursData.getInstance().isOvertime())
+        this.lblTime.setText(HoursDataHandler.INSTANCE.getCurrentTimeString(HoursDataHandler.INSTANCE.getHoursData()));
+        if (HoursDataHandler.INSTANCE.getHoursData().isOvertime())
             this.lblTime.setStyle("-fx-text-fill: red");
         else
             this.lblTime.setStyle(null);
-        this.lblStatus.setText(HoursData.getInstance().getHoursString());
-        if (HoursData.getInstance().isNegativeHours())
+        this.lblStatus.setText(HoursDataHandler.INSTANCE.getHoursString(HoursDataHandler.INSTANCE.getHoursData()));
+        if (HoursDataHandler.INSTANCE.getHoursData().isNegativeHours())
             this.lblStatus.setStyle("-fx-text-fill: red");
         else
             this.lblStatus.setStyle(null);
-        this.progress.setProgress(HoursData.getInstance().getProgress());
-        this.lblStartTime.setText(HoursData.getInstance().getStartTimeString());
-        this.lblEndTime.setText(HoursData.getInstance().getEndTimeString());
+        this.progress.setProgress(HoursDataHandler.INSTANCE.getProgress());
+        this.lblStartTime.setText(HoursDataHandler.INSTANCE.getStartTimeString());
+        this.lblEndTime.setText(HoursDataHandler.INSTANCE.getEndTimeString());
         this.updateProgressBar();
-        if (HoursData.getInstance().getCurrentTime() == LocalTime.MIN && timer != null && enabled) {
-            Notification.getInstance().show(HoursData.getInstance().getTimeUpMessage());
+        if (HoursDataHandler.INSTANCE.getHoursData().getCurrentTime() == LocalTime.MIN && timer != null && enabled) {
+            LOG.info("End time");
+            NotificationManager.INSTANCE.show(NotificationType.END_OF_TIME);
         }
     }
 
@@ -146,7 +168,7 @@ public class Controller {
     }
 
     public void miReset() {
-        HoursData.getInstance().resetCurrentTime();
+        HoursDataHandler.INSTANCE.resetCurrentTime();
         update();
     }
 
@@ -154,7 +176,7 @@ public class Controller {
         TimeEntryDialog dialog = new TimeEntryDialog("Enter time (H:m):");
         dialog.initOwner(this.mainStage);
         Optional<LocalTime> result = dialog.showAndWait();
-        result.ifPresent(localTime -> HoursData.getInstance().setStartTime(localTime));
+        result.ifPresent(localTime -> HoursDataHandler.INSTANCE.setStartTime(localTime));
         update();
     }
 
