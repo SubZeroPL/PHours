@@ -48,6 +48,8 @@ jobs:
       - name: Get version
         id: get_version
         run: echo "::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+      - name: Echo version
+        run: echo "${{ steps.get_version.outputs.version }}"
       - name: Download windows build
         id: download_artifacts_win
         uses: actions/download-artifact@v2
