@@ -22,7 +22,7 @@ jobs:
         id: get_url
         run: |
           echo "::set-output name=upload_url::$(sh .github/workflows/get_upload_url.sh)"
-          echo "${{ steps.get_url.outputs.upload_url }}"
+          echo "steps.get_url.outputs.upload_url"
       - name: Check if release for nightlies already exists
         id: check_release
         if: steps.get_url.outputs.upload_url != ''
@@ -39,12 +39,12 @@ jobs:
           path: linux
       - name: Create Release
         id: create_release
-        if: steps.check_release.outputs.release_exists == false
+        if: steps.check_release.outputs.release_exists != true
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v0.4-alpha
+          tag_name: ${{ steps.get_tag.outputs.git_tag }}
           release_name: Nightly build
           draft: false
           prerelease: true
