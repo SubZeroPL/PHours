@@ -47,7 +47,7 @@ jobs:
         id: get_url
         run: echo $UPLOAD_URL
         env:
-          UPLOAD_URL: curl -s -H "Accept':' application/vnd.github.v3.text" https://api.github.com/repos/SubZeroPL/PHours/releases/tags/v0.4-alpha | grep -Po ''"upload_url"':' ".*"'' | sed ''s/\"//g'' | sed ''s/upload_url':' //''
+          UPLOAD_URL: ${{ curl -s -H "Accept':' application/vnd.github.v3.text" https://api.github.com/repos/SubZeroPL/PHours/releases/tags/v0.4-alpha | grep -Po ''"upload_url"':' ".*"'' | sed ''s/\"//g'' | sed ''s/upload_url':' //'' }}
       - name: Check if release for nightlies already exists
         id: check_release
         run: echo "::set-output name=release_exists::true"
