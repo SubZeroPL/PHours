@@ -10,30 +10,64 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Get version
-        id: get_version
-        run: echo "::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-      - name: Echo version
-        run: echo "${{ steps.get_version.outputs.version }}"
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v0.4.4
+      - name: Get current date
+        id: get_date
+        run: |
+          echo "::set-output name=build_date::$(date +%Y%m%d%H%M%S)"
+          echo "::set-output name=release_date::$(date)"
+      - name: Get pre-release tag
+        id: get_tag
+        run: echo "::set-output name=git_tag::v0.4-alpha"
+      - name: Where we are
+        run: |
+          pwd
+          ls -la
+          cd .github
+          pwd
+          ls -la
+          cd workflows
+          pwd
+          ls -la
+          cd ..
+          cd ..
+      - name: Get upload url for assets
+        id: get_url
+        run: |
+          echo "::set-output name=upload_url::$(.github/workflows/get_upload_url.sh)"
+          echo "${{ steps.get_url.outputs.upload_url }}"
+      - name: Check if release for nightlies already exists
+        id: check_release
+        if: steps.get_url.outputs.upload_url != ''
+        run: echo "::set-output name=release_exists::true"
+      - name: Clear assets if release exists
+        id: clear_assets
+        if: steps.check_release.outputs.release_exists == true
+        run: echo "Clear assets"
+      - name: Download linux build
+        id: download_artifacts_linux
+        uses: actions/download-artifact@v2
         with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-      - name: Echo changelog
-        run: echo "${{ steps.changelog.outputs.changelog }}"
+          name: phours-ubuntu-latest
+          path: linux
       - name: Create Release
         id: create_release
+        if: steps.check_release.outputs.release_exists == false
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: Release PHours v${{ steps.get_version.outputs.version }}
-          draft: true
-          prerelease: false
-          body: |
-            ## Release
-            PHours v${{ steps.get_version.outputs.version }}
-            Changelog:
-            ${{ steps.changelog.outputs.changelog }}
+          tag_name: v0.4-alpha
+          release_name: Nightly build
+          draft: false
+          prerelease: true
+          body: Nightly build ${{ steps.get_date.outputs.release_date }}
+      - name: Upload Linux Release
+        id: upload-release-asset-linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: linux/phours.jar
+          asset_name: PHours-linux_${{ steps.get_date.outputs.build_date }}.jar
+          asset_content_type: application/java-archive
