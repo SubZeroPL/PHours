@@ -40,6 +40,21 @@ jobs:
         run: |
           echo "::set-output name=build_date::$(date +%Y%m%d%H%M%S)"
           echo "::set-output name=release_date::$(date)"
+      - name: Get pre-release tag
+        id: get_tag
+        run: echo "::set-output name=git_tag::v0.4-alpha"
+      - name: Get upload url for assets
+        id: get_url
+        env:
+          upload_url: $(curl -s -H "Accept':' application/vnd.github.v3.text" https://api.github.com/repos/SubZeroPL/PHours/releases/tags/v0.4-alpha)
+        run: echo $upload_url
+      - name: Check if release for nightlies already exists
+        id: check_release
+        run: echo "::set-output name=release_exists::true"
+      - name: Clear assets if release exists
+        id: clear_assets
+        if: steps.check_release.outputs.release_exists == true
+        run: echo "Clear assets"
       - name: Download windows build
         id: download_artifacts_win
         uses: actions/download-artifact@v2
@@ -60,6 +75,7 @@ jobs:
           path: macos
       - name: Create Release
         id: create_release
+        if: steps.check_release.outputs.release_exists == false
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -75,7 +91,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: windows/phours.jar
           asset_name: PHours-windows_${{ steps.get_date.outputs.build_date }}.jar
           asset_content_type: application/java-archive
@@ -85,7 +101,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: linux/phours.jar
           asset_name: PHours-linux_${{ steps.get_date.outputs.build_date }}.jar
           asset_content_type: application/java-archive
@@ -95,7 +111,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: macos/phours.jar
           asset_name: PHours-macos_${{ steps.get_date.outputs.build_date }}.jar
           asset_content_type: application/java-archive
