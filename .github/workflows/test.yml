@@ -18,22 +18,10 @@ jobs:
       - name: Get pre-release tag
         id: get_tag
         run: echo "::set-output name=git_tag::v0.4-alpha"
-      - name: Where we are
-        run: |
-          pwd
-          ls -la
-          cd .github
-          pwd
-          ls -la
-          cd workflows
-          pwd
-          ls -la
-          cd ..
-          cd ..
       - name: Get upload url for assets
         id: get_url
         run: |
-          echo "::set-output name=upload_url::$(.github/workflows/get_upload_url.sh)"
+          echo "::set-output name=upload_url::$(sh .github/workflows/get_upload_url.sh)"
           echo "${{ steps.get_url.outputs.upload_url }}"
       - name: Check if release for nightlies already exists
         id: check_release
