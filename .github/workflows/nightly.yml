@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
+        os: [ ubuntu-latest ]
 
     steps:
       - name: Checkout repository
@@ -45,9 +45,9 @@ jobs:
         run: echo "::set-output name=git_tag::v0.4-alpha"
       - name: Get upload url for assets
         id: get_url
+        run: echo $UPLOAD_URL
         env:
-          upload_url: $(curl -s -H "Accept':' application/vnd.github.v3.text" https://api.github.com/repos/SubZeroPL/PHours/releases/tags/v0.4-alpha)
-        run: echo $upload_url
+          UPLOAD_URL: curl -s -H "Accept':' application/vnd.github.v3.text" https://api.github.com/repos/SubZeroPL/PHours/releases/tags/v0.4-alpha | grep -Po ''"upload_url"':' ".*"'' | sed ''s/\"//g'' | sed ''s/upload_url':' //''
       - name: Check if release for nightlies already exists
         id: check_release
         run: echo "::set-output name=release_exists::true"
