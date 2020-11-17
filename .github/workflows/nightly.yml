@@ -48,7 +48,7 @@ jobs:
       - name: Where we are
         run: |
           pwd
-          ls -l
+          ls -la
       - name: Get upload url for assets
         id: get_url
         run: |
