@@ -49,6 +49,12 @@ jobs:
         run: |
           pwd
           ls -la
+          cd .github
+          pwd
+          ls -la
+          cd .workflows
+          pwd
+          ls -la
       - name: Get upload url for assets
         id: get_url
         run: |
