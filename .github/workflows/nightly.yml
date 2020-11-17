@@ -50,7 +50,7 @@ jobs:
           echo "${{ steps.get_url.outputs.upload_url }}"
       - name: Check if release for nightlies already exists
         id: check_release
-        if: steps.get_url.outputs.upload_url != ""
+        if: steps.get_url.outputs.upload_url != ''
         run: echo "::set-output name=release_exists::true"
       - name: Clear assets if release exists
         id: clear_assets
