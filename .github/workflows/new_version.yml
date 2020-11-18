@@ -7,7 +7,6 @@ on:
   pull_request:
     branches: [ master ]
     types: [ closed ]
-  workflow_dispatch:
 
 jobs:
   build: # build application for windows, linux and macos and upload artifacts
