@@ -30,7 +30,7 @@ jobs:
       - name: Delete nightly releases if it exists
         id: delete_release
         if: steps.check_release.outputs.release_exists == 'true'
-        run: curl -X DELETE -H "Accept':' application/vnd.github.v3+json" -H "Authorization':' token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/SubZeroPL/PHours/releases/${{ steps.check_release.outputs.release_id }}
+        run: curl -u SubZeroPL':'${{ secrets.GITHUB_TOKEN }} -X DELETE -H "Accept':' application/vnd.github.v3+json" https://api.github.com/repos/SubZeroPL/PHours/releases/${{ steps.check_release.outputs.release_id }}
       - name: Download linux build
         id: download_artifacts_linux
         uses: actions/download-artifact@v2
