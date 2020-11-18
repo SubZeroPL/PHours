@@ -20,10 +20,14 @@ jobs:
         run: echo "::set-output name=git_tag::v1.0-pre"
       - name: Get upload url for assets
         id: get_url
+        env:
+          tag_name: ${{ steps.get_tag.outputs.git_tag }}
         run: echo "::set-output name=upload_url::$(sh .github/workflows/get_upload_url.sh)"
       - name: Check if release for nightlies already exists
         id: check_release
         if: steps.get_url.outputs.upload_url != ''
+        env:
+          tag_name: ${{ steps.get_tag.outputs.git_tag }}
         run: |
           echo "::set-output name=release_exists::true"
           echo "::set-output name=release_id::$(sh .github/workflows/get_release_id.sh)"
