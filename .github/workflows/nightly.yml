@@ -74,19 +74,19 @@ jobs:
           body: Nightly build ${{ steps.get_date.outputs.release_date }}
       - name: Download windows build
         id: download_artifacts_win
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: phours-windows-latest
           path: windows
       - name: Download linux build
         id: download_artifacts_linux
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: phours-ubuntu-latest
           path: linux
       - name: Download mac build
         id: download_artifacts_mac
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: phours-macOS-latest
           path: macos
