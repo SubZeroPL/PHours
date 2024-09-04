@@ -28,7 +28,7 @@ jobs:
         id: maven_build
         run: mvn -B package --file pom.xml
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: phours-${{ matrix.os }}
           path: shade/phours.jar
@@ -47,7 +47,7 @@ jobs:
         run: echo "${{ steps.get_version.outputs.version }}"
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@v0.4.4
+        uses: metcalfc/changelog-generator@v4
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Download windows build
